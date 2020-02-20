@@ -1,0 +1,27 @@
+package framework;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+
+import java.io.IOException;
+
+public class SceneSwitch {
+
+    /**
+     * Example usage: SceneSwitch.switchScene("../fxml/Login.fxml", getClass());
+     * @param loc String of file location
+     * @param c Class of calling class - Use: getClass()
+     */
+    public static void switchScene(String loc, Class c) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(c.getResource(loc));
+            Parent logIn = (Parent) fxmlLoader.load();
+            Main.getPrimaryStage().setScene(new Scene(logIn));
+            Main.getPrimaryStage().show();
+        }
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+}

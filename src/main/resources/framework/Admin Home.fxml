@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="framework.AdminHomeController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="800.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Line endX="3.0517578125E-5" endY="678.0" layoutX="200.0" layoutY="119.0" startX="3.0517578125E-5" startY="-119.0" stroke="#9f7c3f" strokeMiterLimit="0.0" strokeWidth="6.0" />
+      <ImageView fx:id="profilePicture" fitHeight="46.0" fitWidth="46.0" layoutX="1140.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="file:img/avatar.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="userName" fill="WHITE" layoutX="895.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " textAlignment="RIGHT" wrappingWidth="233.79827880859375">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Text>
+      <Rectangle fx:id="homeBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" onMouseClicked="#onHomeClicked" onMouseEntered="#onHomeBtnEntered" onMouseExited="#onHomeBtnExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Rectangle fx:id="userBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" layoutY="101.0" onMouseClicked="#onUsersClicked" onMouseEntered="#onUsersButtonEntered" onMouseExited="#onUsersButtonExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Rectangle fx:id="accountsBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" layoutY="202.0" onMouseClicked="#onAccountsClicked" onMouseEntered="#onAccountsEntered" onMouseExited="#onAccountsExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Rectangle fx:id="logoutBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" layoutY="700.0" onMouseClicked="#onLogoutClicked" onMouseEntered="#onLogoutBtnEntered" onMouseExited="#onLogoutBtnExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Rectangle fx:id="journBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" layoutY="303.0" onMouseClicked="#onJournClicked" onMouseEntered="#onJournEntered" onMouseExited="#onJournExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Rectangle fx:id="logBtn" arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="100.0" layoutY="404.0" onMouseClicked="#onLogClicked" onMouseEntered="#onLogEntered" onMouseExited="#onLogExited" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="197.0" />
+      <Text disable="true" layoutY="463.0" onMouseClicked="#onLogClicked" onMouseEntered="#onLogEntered" onMouseExited="#onLogExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Event Log" textAlignment="CENTER" wrappingWidth="195.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text disable="true" layoutY="363.0" onMouseClicked="#onJournClicked" onMouseEntered="#onJournEntered" onMouseExited="#onJournExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Journalizing" textAlignment="CENTER" wrappingWidth="195.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text disable="true" onMouseClicked="#onHomeClicked" onMouseEntered="#onHomeBtnEntered" onMouseExited="#onHomeBtnExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Home" textAlignment="CENTER" wrappingWidth="195.0" y="58.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text disable="true" layoutY="160.0" onMouseClicked="#onUsersClicked" onMouseEntered="#onUsersButtonEntered" onMouseExited="#onUsersButtonExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Users" textAlignment="CENTER" wrappingWidth="195.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text disable="true" layoutY="262.0" onMouseClicked="#onAccountsClicked" onMouseEntered="#onAccountsEntered" onMouseExited="#onAccountsExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Accounts" textAlignment="CENTER" wrappingWidth="195.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text disable="true" layoutY="759.0" onMouseClicked="#onLogoutClicked" onMouseEntered="#onLogoutBtnEntered" onMouseExited="#onLogoutBtnExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Log Out" textAlignment="CENTER" wrappingWidth="195.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <AnchorPane fx:id="userPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <TableView fx:id="usersTableView" editable="true" layoutX="10.0" layoutY="130.0" prefHeight="598.0" prefWidth="976.0" stylesheets="file:stylesheets/admin_user-table.css">
+              <columns>
+                <TableColumn fx:id="userNameCol" prefWidth="112.0" text="User Name" />
+                <TableColumn fx:id="fNameCol" prefWidth="105.0" text="First Name" />
+                  <TableColumn fx:id="lNameCol" prefWidth="105.0" text="Last Name" />
+                  <TableColumn fx:id="dOBCol" prefWidth="90.0" text="Date of Birth" />
+                  <TableColumn fx:id="emailCol" prefWidth="120.0" text="Email" />
+                  <TableColumn fx:id="adminCol" prefWidth="45.0" text="Admin" />
+                  <TableColumn fx:id="managerCol" prefWidth="45.0" text="Manager" />
+                  <TableColumn fx:id="accountantCol" prefWidth="45.0" text="Accountant" />
+                  <TableColumn fx:id="activeCol" prefWidth="45.0" text="Active" />
+                  <TableColumn fx:id="suspendEndCol" prefWidth="90.0" text="Suspend End" />
+                  <TableColumn fx:id="passAttCol" prefWidth="81.1" text="Password Attempts" />
+                  <TableColumn fx:id="passExpCol" prefWidth="90.0" text="Password Expired" />
+              </columns>
+            </TableView>
+            <TextField fx:id="fNameFld" layoutX="10.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="First Name" />
+            <TextField fx:id="lNameFld" layoutX="105.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Last Name" />
+            <TextField fx:id="emailFld" layoutX="200.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Email" />
+            <TextField fx:id="addressFld" layoutX="295.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Address" />
+            <DatePicker fx:id="dobFld" layoutX="390.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="DOB" />
+            <TextField fx:id="passwordFld" layoutX="485.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Password" />
+            <TextField fx:id="secQFld" layoutX="580.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Secret Q" />
+            <TextField fx:id="secAFld" layoutX="675.0" layoutY="737.0" prefHeight="27.0" prefWidth="90.0" promptText="Secret A" />
+            <ComboBox fx:id="accTypeCmbBx" layoutX="770.0" layoutY="737.0" prefWidth="125.0" promptText="Type" />
+            <Button layoutX="900.0" layoutY="737.0" mnemonicParsing="false" onAction="#onAddUser" text="Add User">
+               <tooltip>
+                  <Tooltip text="Press here to submit new user form" />
+               </tooltip></Button>
+            <CheckBox fx:id="expPassChkBx" layoutX="857.0" layoutY="102.0" mnemonicParsing="false" text="Expired Passwords">
+               <tooltip>
+                  <Tooltip text="Press here to show expired passwords" />
+               </tooltip></CheckBox>
+            <Text fx:id="alertText" fill="RED" layoutX="14.0" layoutY="786.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="881.22900390625">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="accountsPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="675.0" layoutY="100.0" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="100.0" />
+            <TableView fx:id="accountsTableView" editable="true" layoutX="200.0" layoutY="130.0" maxHeight="500.0" prefHeight="598.0" prefWidth="601.0" stylesheets="file:stylesheets/admin_user-table.css">
+               <columns>
+                  <TableColumn fx:id="accountNumberCol" prefWidth="150.0" text="Account Number" />
+                  <TableColumn fx:id="accountNameCol" prefWidth="200.0" text="Account Name" />
+                  <TableColumn fx:id="accountTypeCol" prefWidth="150.0" text="Account Type" />
+                  <TableColumn fx:id="statementCol" prefWidth="99.0" text="Statement" />
+               </columns>
+            </TableView>
+            <Text fx:id="alertTextAccountList" fill="RED" layoutX="200.0" layoutY="756.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="600.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Text>
+            <TextField fx:id="searchTxtFld" layoutX="677.0" layoutY="102.0" maxHeight="25.0" maxWidth="98.0" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;">
+               <font>
+                  <Font size="10.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Search to narrow results in the table&#10;Perform an empty search to show all results" />
+               </tooltip>
+            </TextField>
+            <Rectangle fx:id="searchBtn" arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="775.0" layoutY="100.0" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="779.0" layoutY="103.0" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:img/search.png" />
+               </image>
+            </ImageView>
+            <RadioButton fx:id="accountNumberRdo" layoutX="205.0" layoutY="104.0" mnemonicParsing="false" text="Account Number">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tgSearch" />
+               </toggleGroup></RadioButton>
+            <RadioButton fx:id="statementRdo" layoutX="579.0" layoutY="104.0" mnemonicParsing="false" text="Statement" toggleGroup="$tgSearch" />
+            <RadioButton fx:id="accountTypeRdo" layoutX="460.0" layoutY="104.0" mnemonicParsing="false" text="Account Type" toggleGroup="$tgSearch" />
+            <RadioButton fx:id="accountNameRdo" layoutX="336.0" layoutY="104.0" mnemonicParsing="false" text="Account Name" toggleGroup="$tgSearch" />
+            <TextField fx:id="accountNameField" layoutX="200.0" layoutY="635.0" maxWidth="160.0" promptText="Account Name" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <TextField fx:id="accountNumberField" layoutX="200.0" layoutY="666.0" maxWidth="160.0" promptText="Account Number" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <TextField fx:id="accountDescriptionField" layoutX="200.0" layoutY="698.0" maxWidth="160.0" promptText="Account Description" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <ComboBox fx:id="categoryCmbBx" layoutX="366.0" layoutY="635.0" onHiding="#onCategoryHiding" prefWidth="160.0" promptText="Category" />
+            <ComboBox fx:id="subcategoryCmbBx" layoutX="366.0" layoutY="666.0" prefWidth="160.0" promptText="Subcategory" />
+            <TextField fx:id="initialBalanceField" layoutX="531.0" layoutY="635.0" maxWidth="160.0" promptText="Initial Balance" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <ComboBox fx:id="statementCmbBx" layoutX="366.0" layoutY="698.0" prefWidth="160.0" promptText="Statement" />
+            <Rectangle fx:id="submitBtn" arcHeight="5.0" arcWidth="5.0" fill="#424242" height="91.0" layoutX="696.0" layoutY="634.0" onMouseClicked="#onSubmitClicked" onMouseEntered="#onSubmitEntered" onMouseExited="#onSubmitExited" stroke="#9f7c3f" strokeType="INSIDE" width="103.0" />
+            <Text fill="#9f7c3f" layoutX="700.0" layoutY="682.0" onMouseClicked="#onSubmitClicked" onMouseEntered="#onSubmitEntered" onMouseExited="#onSubmitExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Submit" textAlignment="CENTER" wrappingWidth="95.01061626848741" />
+            <Text fx:id="accountAlertText" fill="RED" layoutX="199.0" layoutY="761.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="600.784423828125" />
+            <ComboBox fx:id="normalSideCmbBx" layoutX="531.0" layoutY="666.0" prefWidth="160.0" promptText="Normal Side" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="200.0" layoutX="110.0" layoutY="75.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="3.0" width="750.0" />
+            <TableView layoutX="110.0" layoutY="307.0" prefHeight="463.0" prefWidth="750.0" stylesheets="file:stylesheets/admin_user-table.css">
+              <columns>
+                <TableColumn prefWidth="101.0" text="Date" />
+                <TableColumn prefWidth="190.0" text="Item" />
+                  <TableColumn prefWidth="57.0" text="Post Ref" />
+                  <TableColumn prefWidth="100.0" text="Debit" />
+                  <TableColumn prefWidth="100.0" text="Credit" />
+                  <TableColumn prefWidth="75.0" text="Balance">
+                     <columns>
+                        <TableColumn prefWidth="100.0" text="Debit" />
+                        <TableColumn prefWidth="100.0" text="Credit" />
+                     </columns>
+                  </TableColumn>
+              </columns>
+            </TableView>
+            <Text fx:id="accNameTxt" fill="#9f7c3f" layoutX="145.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Name:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="accNumTxt" fill="#9f7c3f" layoutX="145.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Number:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="accDescTxt" fill="#9f7c3f" layoutX="145.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Description:" wrappingWidth="439.59166670666156">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="normalSideTxt" fill="#9f7c3f" layoutX="600.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Normal Side:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="categoryTxt" fill="#9f7c3f" layoutX="600.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="subcatTxt" fill="#9f7c3f" layoutX="600.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subcategory:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="initBalTxt" fill="#9f7c3f" layoutX="600.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inital Balance:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="balTxt" fill="#9f7c3f" layoutX="600.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="createdTxt" fill="#9f7c3f" layoutX="145.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Created:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="activeTxt" fill="#9f7c3f" layoutX="600.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Active:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="statementTxt" fill="#9f7c3f" layoutX="600.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Statement:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Button layoutX="881.0" layoutY="85.0" mnemonicParsing="false" onAction="#onReturnPressed" text="Return">
+               <tooltip>
+                  <Tooltip text="Return to all accounts" />
+               </tooltip></Button>
+            <Button layoutX="881.0" layoutY="140.0" mnemonicParsing="false" onAction="#onEditPressed" text="Edit">
+               <tooltip>
+                  <Tooltip text="Edit account information" />
+               </tooltip></Button>
+            <Text fx:id="deacAlertText" fill="RED" layoutX="110.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="750.0" />
+            <Button layoutX="881.0" layoutY="195.0" mnemonicParsing="false" onAction="#onDeactivatePressed" text="Deactivate">
+               <tooltip>
+                  <Tooltip text="Deactivate Account&#10;Balance must be 0" />
+               </tooltip></Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="accountEditPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="240.0" layoutX="270.0" layoutY="74.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="3.0" width="467.0" />
+            <Text fx:id="accNameTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Name:" wrappingWidth="437.681640625">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="accDescTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Description:" wrappingWidth="439.59166670666156">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="normalSideTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Normal Side:" wrappingWidth="435.4412841796875">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="categoryTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" wrappingWidth="435.17584228515636">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="subcatTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subcategory:" wrappingWidth="435.17584228515636">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="statementTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Statement:" wrappingWidth="437.7470703125">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Button layoutX="750.0" layoutY="85.0" mnemonicParsing="false" onAction="#onCancelPressed" text="Cancel">
+               <tooltip>
+                  <Tooltip text="Cancel edit" />
+               </tooltip></Button>
+            <Button layoutX="750.0" layoutY="140.0" mnemonicParsing="false" onAction="#onSavePressed" text="Save">
+               <tooltip>
+                  <Tooltip text="Save edit" />
+               </tooltip></Button>
+            <Text fx:id="confirmationTxt" fill="#1ddd2a" layoutX="282.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="445.18692281529496" />
+            <TextField fx:id="newAccountNameFld" layoutX="550.0" layoutY="92.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="newAccountDescFld" layoutX="550.0" layoutY="119.0">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </TextField>
+            <ComboBox fx:id="newNormalSideCombBx" layoutX="550.0" layoutY="145.0" prefWidth="123.0" promptText="Normal Side" style="-fx-font-size: 8;" />
+            <ComboBox fx:id="newCatCmbBx" layoutX="550.0" layoutY="191.0" onHiding="#onNewCategoryHiding" prefWidth="123.0" promptText="Category" style="-fx-font-size: 8;" />
+            <ComboBox fx:id="newSubCatCmbBx" layoutX="550.0" layoutY="214.0" prefWidth="123.0" promptText="Subcategory" style="-fx-font-size: 8;" />
+            <ComboBox fx:id="newStatementCmbBx" layoutX="550.0" layoutY="168.0" prefWidth="123.0" promptText="Statement" style="-fx-font-size: 8;" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="logPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <TableView fx:id="logTable" editable="true" layoutX="10.0" layoutY="130.0" prefHeight="598.0" prefWidth="976.0" stylesheets="file:stylesheets/admin_user-table.css">
+               <columns>
+                  <TableColumn fx:id="logIDCol" prefWidth="67.38824462890625" text="ID" />
+                  <TableColumn fx:id="logUIDCol" prefWidth="61.0028076171875" text="User ID" />
+                  <TableColumn fx:id="logActCol" prefWidth="71.85568237304688" text="Action" />
+                  <TableColumn fx:id="logAccNumCol" prefWidth="100.29983520507812" text="Account Number" />
+                  <TableColumn fx:id="logMessageCol" prefWidth="673.7001953125" text="Message" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
