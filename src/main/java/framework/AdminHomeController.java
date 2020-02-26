@@ -309,81 +309,15 @@ public class AdminHomeController {
     @FXML
     private Rectangle logBtn;
 
-    @FXML
-    void onLogClicked() {
-        accountsPane.setVisible(false);
-        accountEditPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-        userPane.setVisible(false);
-        logPane.setVisible(true);
-    }
 
-    @FXML
-    void onLogEntered() {
-        logBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onLogExited() {
-        logBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onJournClicked() {
-
-    }
-
-    @FXML
-    void onJournEntered() {
-        journBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onJournExited() {
-        journBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onSearchClicked() {
-        if (searchTxtFld.getText() != null && tgSearch.getSelectedToggle() != null) {
-            if (searchTxtFld.getText().equals("")) {
-                loadAccounts();
-            }
-            else {
-                String searchString = "\"" + searchTxtFld.getText() + "\"";
-                String colString = "";
-                if (accountNumberRdo.isSelected())
-                    colString = "accountNum";
-                else if (accountNameRdo.isSelected())
-                    colString = "accountName";
-                else if (accountTypeRdo.isSelected())
-                    colString = "category";
-                else if (statementRdo.isSelected())
-                    colString = "statement";
-
-                System.out.println("[INFO] " + new Date().toString() + " Loading search to table");
-                String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts where " + colString + " = " + searchString;
-                accountsTableView.setItems(buildAccountData(sqlQry));
-                System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
-            }
-        }
-        else {
-            loadAccounts();
-        }
-    }
-
-    @FXML
-    void onSearchEntered() {
-        searchBtn.setFill(HOV_SEARCH_COLOR);
-    }
-
-    @FXML
-    void onSearchExited() {
-        searchBtn.setFill(REG_SEARCH_COLOR);
-    }
-
+    /**
+     * Initialize method is called before primary screen is loaded. Place setup methods here.
+     */
     @FXML
     public void initialize() {
+
+        System.out.println("[INFO] " + new Date().toString() + " Admin home page init begin");
+
         userName.setText(GlobalUser.getUserName());
         userPane.setVisible(false);
         accountsPane.setVisible(false);
@@ -407,6 +341,11 @@ public class AdminHomeController {
         System.out.println("[INFO] " + new Date().toString() + " Admin home page init success");
     }
 
+
+    /**
+     * Method for adding user. Called when admin is adding user directly.
+     * @param event
+     */
     @FXML
     void onAddUser(ActionEvent event) {
         try {
@@ -446,6 +385,8 @@ public class AdminHomeController {
                 System.out.println("[INFO] " + new Date().toString() + " Email check passed, All fields filled,");
 
                 alertText.setText("");
+
+                System.out.println("[INFO] " + new Date().toString() + " Preparing user fields for DB entry");
 
                 // Prepare sql statement
                 String firstName = fNameFld.getText();
@@ -523,7 +464,7 @@ public class AdminHomeController {
                 // Getting unique id for new user
                 PreparedStatement getUIDStmt = conn.prepareStatement("SELECT idusers FROM users WHERE userName = (?)");
                 getUIDStmt.setString(1, userName);
-                System.out.println("[INFO] " + new Date().toString() + " Begin new user id query");
+                System.out.println("[INFO] " + new Date().toString() + " Begin new user id query for password DB insert");
                 ResultSet uIDrs = getUIDStmt.executeQuery();
                 System.out.println("[INFO] " + new Date().toString() + " New user id query successful");
                 int uID = -1;
@@ -555,63 +496,11 @@ public class AdminHomeController {
         }
     }
 
-    @FXML
-    void onHomeBtnEntered(MouseEvent event) {
-        homeBtn.setFill(HOV_BUTTON_COLOR);
-    }
 
-    @FXML
-    void onHomeBtnExited(MouseEvent event) {
-        homeBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onHomeClicked(MouseEvent event) {
-        System.out.println("[INFO] " + new Date().toString() + " Loading admin home screen");
-        userPane.setVisible(false);
-        accountsPane.setVisible(false);
-        accountEditPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-        System.out.println("[INFO] " + new Date().toString() + " Admin load home screen success");
-
-    }
-
-    @FXML
-    void onLogoutBtnEntered(MouseEvent event) {
-        logoutBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onLogoutBtnExited(MouseEvent event) {
-        logoutBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onLogoutClicked(MouseEvent event) {
-        System.out.println("[INFO] " + new Date().toString() + " Logging out admin. Global user object cleared. Returning to login screen" );
-        GlobalUser.clearUser();
-        SceneSwitch.switchScene("Login.fxml", getClass());
-    }
-
-    @FXML
-    void onUsersButtonEntered(MouseEvent event) {
-        userBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onUsersButtonExited(MouseEvent event) {
-        userBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onUsersClicked(MouseEvent event) {
-        // Load pane
-        accountsPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-        accountEditPane.setVisible(false);
-        userPane.setVisible(true);
-    }
-
+    /**
+     * Accounts page methods
+     * @param event
+     */
     @FXML
     void onAccountsClicked(MouseEvent event) {
         loadAccounts();
@@ -631,7 +520,17 @@ public class AdminHomeController {
         accountsBtn.setFill(REG_BUTTON_COLOR);
     }
 
+    // This method calls the buildAccountData() method. Used to refresh table of accounts
+    private void loadAccounts() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all accounts to table");
+        String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts";
+        accountsTableView.setItems(buildAccountData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
+    }
+
+    // Method to ensure valid account number
     private boolean validateAccountNum() {
+        System.out.println("[INFO] " + new Date().toString() + " Validating account number");
         String accountNum = accountNumberField.getText();
         for (int i = 0; i < accountNum.length(); i++) {
             if (!Character.isDigit(accountNum.charAt(i))) {
@@ -641,7 +540,9 @@ public class AdminHomeController {
         return true;
     }
 
+    // Method to validate number is in money format
     private boolean validateMoneyNumber(String num) {
+        System.out.println("[INFO] " + new Date().toString() + " Validating money format");
         String balance = num;
         boolean ignore = false;
         if (balance.charAt(balance.length() - 3) == '.' ) {
@@ -659,7 +560,9 @@ public class AdminHomeController {
         return true;
     }
 
+    // Method to format number as money
     private String formatNumber(String number) {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting number as money");
         Double num = Double.valueOf(number);
         DecimalFormat format = new DecimalFormat("#.00");
         format.setGroupingUsed(true);
@@ -668,9 +571,307 @@ public class AdminHomeController {
         return newNum;
     }
 
+    // This method builds the data for the account table view. It is assembling a Map to hold the values.
+    private ObservableList<Map> buildAccountData(String query) {
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building account table data from sql query");
+            ObservableList<Map> accountList = FXCollections.observableArrayList();
+            PreparedStatement getAccounts = conn.prepareStatement(query);
+            ResultSet rs = getAccounts.executeQuery();
+            while (rs.next()) {
+                Map<String, String> account = new HashMap<>();
+                account.put("accountNum", String.valueOf(rs.getString("accountNum")));
+                account.put("accountName", String.valueOf(rs.getString("accountName")));
+                account.put("category", String.valueOf(rs.getString("category")));
+                account.put("statement", String.valueOf(rs.getString("statement")));
+                accountList.add(account);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning account table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildAccountData()");
+            return accountList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    // This method formats the account table
+    private void formatAcctTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting account table design");
+        accountNumberCol.setCellValueFactory(new MapValueFactory("accountNum"));
+        accountNameCol.setCellValueFactory(new MapValueFactory("accountName"));
+        accountTypeCol.setCellValueFactory(new MapValueFactory("category"));
+        statementCol.setCellValueFactory(new MapValueFactory("statement"));
+    }
+
+    // This method sets options for the account type combo box
+    private void setAccTypeCmbBxOptions() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting account type combo box options");
+        ObservableList<String> accTypes = FXCollections.observableArrayList("Admin", "Manager", "Accountant");
+        accTypeCmbBx.setItems(accTypes);
+    }
+
+    // Method to set table actions for account table.
+    private void setDoubleClickOpenAcct() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting account table mouse actions");
+
+        accountsTableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String accountNum = (String) accountsTableView.getSelectionModel().getSelectedItem().get("accountNum");
+                loadThisAccount(accountNum);
+            }
+        });
+    }
+
+    // Method to set global account
+    private void loadThisAccount(String accNum) {
+
+        System.out.println("[INFO] " + new Date().toString() + " Setting global account");
+
+        Account.setAccount(accNum);
+
+        accNameTxt.setText(UNFILLED_ACCT_NAME + Account.getAccountName());
+        accNumTxt.setText(UNFILLED_ACCT_NUM + Account.getAccountNumber());
+        accDescTxt.setText(UNFILLED_ACCT_DESC + Account.getAccountDescription());
+        createdTxt.setText(UNFILLED_CREATED + Account.getCreated());
+        normalSideTxt.setText(UNFILLED_NORM_SIDE + Account.getNormalSide());
+        initBalTxt.setText(UNFILLED_INIT_BAL + Account.getInitialBalance());
+        balTxt.setText(UNFILLED_BAL + Account.getBalance());
+        statementTxt.setText(UNFILLED_STATEMENT + Account.getStatement());
+        activeTxt.setText(UNFILLED_ACTIVE + Account.getActive());
+        categoryTxt.setText(UNFILLED_CAT + Account.getCategory());
+        subcatTxt.setText(UNFILLED_SUBCAT + Account.getSubcategory());
+
+        accountsPane.setVisible(false);
+        userPane.setVisible(false);
+        singleAccountPane.setVisible(true);
+    }
+
+    // Method to return to all accounts page
+    @FXML
+    void onReturnPressed(ActionEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Clearing account text fields of unique data and resetting view");
+
+        accNameTxt.setText(UNFILLED_ACCT_NAME);
+        accNumTxt.setText(UNFILLED_ACCT_NUM);
+        accDescTxt.setText(UNFILLED_ACCT_DESC);
+        createdTxt.setText(UNFILLED_CREATED);
+        normalSideTxt.setText(UNFILLED_NORM_SIDE);
+        initBalTxt.setText(UNFILLED_INIT_BAL);
+        balTxt.setText(UNFILLED_BAL);
+        statementTxt.setText(UNFILLED_STATEMENT);
+        activeTxt.setText(UNFILLED_ACTIVE);
+        categoryTxt.setText(UNFILLED_CAT);
+        subcatTxt.setText(UNFILLED_SUBCAT);
+
+        Account.clearAccount();
+
+        singleAccountPane.setVisible(false);
+        userPane.setVisible(false);
+        accountsPane.setVisible(true);
+    }
+
+    private boolean validateAccountNumberUnique() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountNumber()");
+            }
+            PreparedStatement emailChk = conn.prepareStatement("SELECT COUNT(*) FROM accounts WHERE accountNum like (?)");
+            emailChk.setString(1, accountNumberField.getText());
+            System.out.println("[INFO] " + new Date().toString() + " Begin account number check query");
+            ResultSet rsAccNum = emailChk.executeQuery();
+            System.out.println("[INFO] " + new Date().toString() + " Account number check query success");
+            int numAccts = -1;
+            while (rsAccNum.next()) {
+                numAccts = rsAccNum.getInt(1);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.validateAccountNumber()");
+            if (numAccts != 0) {
+                return false;
+            }
+            else
+                return true;
+        }
+        catch (Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.validateAccountNumber()");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean validateAccountNameUnique() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountName()");
+            }
+            PreparedStatement emailChk = conn.prepareStatement("SELECT COUNT(*) FROM accounts WHERE accountName like (?)");
+            emailChk.setString(1, accountNameField.getText());
+            System.out.println("[INFO] " + new Date().toString() + " Begin account name check query");
+            ResultSet rsAccNme = emailChk.executeQuery();
+            System.out.println("[INFO] " + new Date().toString() + " Account name check query success");
+            int numAccts = -1;
+            while (rsAccNme.next()) {
+                numAccts = rsAccNme.getInt(1);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.validateAccountName()");
+            if (numAccts != 0) {
+                return false;
+            }
+            else
+                return true;
+
+        }
+        catch (Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.validateAccountName()");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    // Setting combo box options
+    void setCategoryCmbBx() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting category type combo box options");
+        ObservableList<String> catTypes = FXCollections.observableArrayList("Asset", "Liability", "Equity");
+        categoryCmbBx.setItems(catTypes);
+        newCatCmbBx.setItems(catTypes);
+    }
+
+
+    void setStatementCmbBx() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting statement type combo box options");
+        ObservableList<String> statementTypes = FXCollections.observableArrayList("IS", "BS", "RE");
+        statementCmbBx.setItems(statementTypes);
+        newStatementCmbBx.setItems(statementTypes);
+    }
+
+
+    void setNormalSideCmbBx() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting normal side type combo box options");
+        ObservableList<String> normalSideTypes = FXCollections.observableArrayList("Credit", "Debit");
+        normalSideCmbBx.setItems(normalSideTypes);
+        newNormalSideCombBx.setItems(normalSideTypes);
+    }
+
+    // Method to transition to edit account view
+    @FXML
+    void onEditPressed() {
+
+        System.out.println("[INFO] " + new Date().toString() + " Begin editing account: " + Account.getAccountName());
+
+        deacAlertText.setText("");
+        newAccountNameFld.setText(Account.getAccountName());
+        newAccountDescFld.setText(Account.getAccountDescription());
+
+        singleAccountPane.setVisible(false);
+        accountEditPane.setVisible(true);
+    }
+
+    // Deactivate account
+    @FXML
+    void onDeactivatePressed() {
+
+        System.out.println("[INFO] " + new Date().toString() + " Attempting deactivate of account:  " + Account.getAccountName());
+
+
+        if (Account.getBalance().equals("0")) {
+            deacAlertText.setText("");
+            // todo - set account active to 0.
+
+            // Adding event to event log
+            String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " deactivated an account. Account Name: " + Account.getAccountName() + ". Account Number: "
+                    + Account.getAccountNumber() + ".";
+            EventLog.createEventLog(GlobalUser.getIdUsers(), "Deactivate", Account.getAccountNumber(), message);
+        }
+        else
+            deacAlertText.setText("ERROR: Cannot deactivate account with balance greater than 0");
+    }
+
+    // Cancel account edit
+    @FXML
+    void onCancelPressed() {
+        System.out.println("[INFO] " + new Date().toString() + " Cancel editing account " + Account.getAccountName());
+        deacAlertText.setText("");
+        accountEditPane.setVisible(false);
+        loadThisAccount(Account.getAccountNumber());
+        singleAccountPane.setVisible(true);
+    }
+
+    // Save account edit
+    @FXML
+    void onSavePressed() {
+        confirmationTxt.setText("");
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database AdminHomeController.onSavePressed()");
+            }
+
+            if (!(newAccountNameFld.getText() == null) && !(newAccountDescFld.getText() == null) && !(newNormalSideCombBx.getValue() == null) && !(newStatementCmbBx.getValue() == null) && !(newCatCmbBx.getValue() == null) && !(newSubCatCmbBx.getValue() == null)) {
+                PreparedStatement updateAcct = conn.prepareStatement("update accounts set accountName = (?)," +
+                        " accountDesc = (?), normalSide = (?), statement = (?)," +
+                        " category = (?), subcategory = (?) where idaccounts = (?)");
+                updateAcct.setString(1, newAccountNameFld.getText());
+                updateAcct.setString(2, newAccountDescFld.getText());
+                updateAcct.setString(3, newNormalSideCombBx.getValue());
+                updateAcct.setString(4, newStatementCmbBx.getValue());
+                updateAcct.setString(5, newCatCmbBx.getValue());
+                updateAcct.setString(6, newSubCatCmbBx.getValue());
+                updateAcct.setInt(7, Account.getAccountId());
+                updateAcct.executeUpdate();
+
+                confirmationTxt.setText("Update successful! Returning to account page");
+
+                sleep(3000);
+
+                String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " updated an account. Account Number: "
+                        + Account.getAccountNumber() + ". New Values: Account Name: " + newAccountNameFld.getText() + ". Account Description: "+ newAccountDescFld.getText() +
+                        ". Normal Side: " + newNormalSideCombBx.getValue() + ". Statement: " + newStatementCmbBx.getValue() + ". Category: " + newCatCmbBx.getValue() + ". Subcategory: " + newSubCatCmbBx.getValue() + ".";
+
+                EventLog.createEventLog(GlobalUser.getIdUsers(), "Update", Account.getAccountNumber(), message);
+
+                accountEditPane.setVisible(false);
+                loadThisAccount(Account.getAccountNumber());
+                singleAccountPane.setVisible(true);
+            }
+            else {
+                confirmationTxt.setText("ERROR: Please fill all fields");
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.onSavePressed()");
+
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.onSavePressed()");
+            ex.printStackTrace();
+        }
+    }
+
+    // Method to submit new account to database. Draws values from fields on accounts page.
+    /**
+     *  Submit Button methods. This is part of accounts page
+     */
     @FXML
     void onSubmitClicked() {
         // Take in values from fields
+        System.out.println("[INFO] " + new Date().toString() + " Setting account field values for DB insert");
         String accountName = accountNameField.getText();
         String accountNumber = accountNumberField.getText();
         if (validateAccountNameUnique()) {
@@ -714,6 +915,9 @@ public class AdminHomeController {
                             loadAccounts();
                             System.out.println("[INFO] " + new Date().toString() + " Account insert query successful");
 
+                            System.out.println("[INFO] " + new Date().toString() + " Adding account creation to Event Log");
+
+                            // Adding account to event log
                             String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " created an account. Account Name: " + accountNameField.getText() + ". Account Number: "
                                     + accountNumberField.getText() + ".";
                             EventLog.createEventLog(GlobalUser.getIdUsers(), "Create", accountNumberField.getText(), message);
@@ -758,9 +962,16 @@ public class AdminHomeController {
         submitBtn.setFill(REG_SEARCH_COLOR);
     }
 
+
+    /**
+     * Various functions. Comments will explain each method
+     */
+    // This method updates subcategory options for the subcategory combo box on the NEW accounts page. It is based on
+    // the selection in the category combo box
     @FXML
     void onCategoryHiding() {
         try {
+            System.out.println("[INFO] " + new Date().toString() + " Updating subcat options");
             String category = categoryCmbBx.getValue();
             ObservableList<String> subcatTypes;
             if (category.equals("Asset")) {
@@ -781,9 +992,12 @@ public class AdminHomeController {
         }
     }
 
+    // This method updates subcategory options for the subcategory combo box on the accounts EDIT page. It is based on
+    // the selection in the category combo box
     @FXML
     void onNewCategoryHiding() {
         try {
+            System.out.println("[INFO] " + new Date().toString() + " Updating subcat options");
             String category = newCatCmbBx.getValue();
             ObservableList<String> subcatTypes;
             if (category.equals("Asset")) {
@@ -804,6 +1018,305 @@ public class AdminHomeController {
         }
     }
 
+    // Validates passwords
+    private static boolean passwordValid(String pwd) {
+        if (pwd.length() < 8) {
+            System.out.println("Password length fail");
+            return false;
+        }
+        else if (!firstLetterIsChar(pwd)) {
+            return false;
+        }
+        else if (!containsIntAndSpecial(pwd)) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    // Used to validate passwords
+    private static boolean firstLetterIsChar(String pwd) {
+        char fLetter = pwd.charAt(0);
+        int letterUnicode = fLetter;
+
+        if ((letterUnicode > 64 && letterUnicode < 91) ||
+                (letterUnicode > 97 && letterUnicode < 123)) {
+            return true;
+        }
+
+        System.out.println("Password first char fail");
+        return false;
+    }
+
+    // Used to validate Passwords
+    private static boolean containsIntAndSpecial(String pwd) {
+        boolean special = false;
+        boolean number = false;
+        char currentLetter;
+        for (int i = 0; i < pwd.length(); i++) {
+            currentLetter = pwd.charAt(i);
+
+            if (Character.isDigit(currentLetter))
+                number = true;
+            if ((currentLetter > 32 && currentLetter < 49) ||
+                    (currentLetter > 57 && currentLetter < 65) ||
+                    (currentLetter > 90 && currentLetter < 97) ||
+                    (currentLetter > 122 && currentLetter < 127))
+                special = true;
+
+            if (number && special)
+                return true;
+        }
+        System.out.println("Number or Special error");
+        return false;
+    }
+
+    // Method to check username against other usernames in db. If match then add 'x' to end of username.
+    private static String verifyUsername(String uName) {
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. SignUpController.verifyUsername()");
+            }
+            // Checking for username in db
+            PreparedStatement unameChk = conn.prepareStatement("SELECT COUNT(*) FROM users WHERE userName like CONCAT('%', (?), '%')");
+            unameChk.setString(1, uName);
+            System.out.println("[INFO] " + new Date().toString() + " Begin username query");
+            ResultSet rs = unameChk.executeQuery();
+            System.out.println("[INFO] " + new Date().toString() + " Username query successful");
+            int numRecords = 0;
+            while (rs.next()) {
+                numRecords = rs.getInt(1);
+            }
+            if (numRecords == 0) {
+                System.out.println("[INFO] " + new Date().toString() + " Database connection closed. SignUpController.verifyUsername()");
+                return uName;
+            }
+            String uNameNew = uName + String.valueOf(numRecords);
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. SignUpController.verifyUsername()");
+            return uNameNew;
+        }
+
+        catch (Exception ex) {
+            System.out.println("Error connecting to db");
+            ex.printStackTrace();
+        }
+        System.out.println("[Fatal Error] " + new Date().toString() + " Username creation error");
+        return "Error Contact Admin";
+    }
+
+
+    /**
+     * Event Log methods
+     */
+
+    @FXML
+    void onLogClicked() {
+        accountsPane.setVisible(false);
+        accountEditPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        userPane.setVisible(false);
+        System.out.println("[INFO] " + new Date().toString() + " Clearing all panes. Showing Event Log Pane");
+        logPane.setVisible(true);
+    }
+
+    @FXML
+    void onLogEntered() {
+        logBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onLogExited() {
+        logBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    // This method calls the buildLogData() method. Used to refresh log table
+    private void loadLogs() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all logs to table");
+        String sqlQry = "SELECT * FROM app_domain.event_log";
+        logTable.setItems(buildLogData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Logs load to table success");
+    }
+
+    // This method formats the log table
+    private void formatLogTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting log table design");
+        logIDCol.setCellValueFactory(new MapValueFactory("idevent_log"));
+        logUIDCol.setCellValueFactory(new MapValueFactory("userid"));
+        logActCol.setCellValueFactory(new MapValueFactory("action"));
+        logAccNumCol.setCellValueFactory(new MapValueFactory("account_number"));
+        logMessageCol.setCellValueFactory(new MapValueFactory("message"));
+    }
+
+    // This method builds the data for the event log table view. It is assembling a Map to hold the values.
+    private ObservableList<Map> buildLogData(String query) {
+        try {
+            String url = "jdbc:mysql://localhost:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildLogData()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building log table data from sql query");
+            ObservableList<Map> logList = FXCollections.observableArrayList();
+            PreparedStatement getLogs = conn.prepareStatement(query);
+            ResultSet rs = getLogs.executeQuery();
+            while (rs.next()) {
+                Map<String, String> log = new HashMap<>();
+                log.put("idevent_log", String.valueOf(rs.getString("idevent_log")));
+                log.put("userid", String.valueOf(rs.getString("userid")));
+                log.put("action", String.valueOf(rs.getString("action")));
+                log.put("account_number", String.valueOf(rs.getString("account_number")));
+                log.put("message", String.valueOf(rs.getString("message")));
+                logList.add(log);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning log table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildLogData()");
+            return logList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildLogData()");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Journal Methods
+     */
+
+    @FXML
+    void onJournClicked() {
+
+    }
+
+    @FXML
+    void onJournEntered() {
+        journBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onJournExited() {
+        journBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    /**
+     * Account search methods
+     */
+
+    @FXML
+    void onSearchClicked() {
+        if (searchTxtFld.getText() != null && tgSearch.getSelectedToggle() != null) {
+            if (searchTxtFld.getText().equals("")) {
+                loadAccounts();
+            }
+            else {
+                String searchString = "\"" + searchTxtFld.getText() + "\"";
+                String colString = "";
+                if (accountNumberRdo.isSelected())
+                    colString = "accountNum";
+                else if (accountNameRdo.isSelected())
+                    colString = "accountName";
+                else if (accountTypeRdo.isSelected())
+                    colString = "category";
+                else if (statementRdo.isSelected())
+                    colString = "statement";
+
+                System.out.println("[INFO] " + new Date().toString() + " Loading search to table");
+                String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts where " + colString + " = " + searchString;
+                accountsTableView.setItems(buildAccountData(sqlQry));
+                System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
+            }
+        }
+        else {
+            loadAccounts();
+        }
+    }
+
+    @FXML
+    void onSearchEntered() {
+        searchBtn.setFill(HOV_SEARCH_COLOR);
+    }
+
+    @FXML
+    void onSearchExited() {
+        searchBtn.setFill(REG_SEARCH_COLOR);
+    }
+
+    /**
+     * Home button methods
+     * @param event
+     */
+    @FXML
+    void onHomeBtnEntered(MouseEvent event) {
+        homeBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onHomeBtnExited(MouseEvent event) {
+        homeBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onHomeClicked(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Loading admin home screen");
+        userPane.setVisible(false);
+        accountsPane.setVisible(false);
+        accountEditPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        System.out.println("[INFO] " + new Date().toString() + " Admin load home screen success");
+
+    }
+
+    /**
+     * Logout button methods
+     * @param event
+     */
+    @FXML
+    void onLogoutBtnEntered(MouseEvent event) {
+        logoutBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onLogoutBtnExited(MouseEvent event) {
+        logoutBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onLogoutClicked(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Logging out admin. Global user object cleared. Returning to login screen" );
+        GlobalUser.clearUser();
+        SceneSwitch.switchScene("Login.fxml", getClass());
+    }
+
+    /**
+     * User button methods
+     * @param event
+     */
+    @FXML
+    void onUsersButtonEntered(MouseEvent event) {
+        userBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onUsersButtonExited(MouseEvent event) {
+        userBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onUsersClicked(MouseEvent event) {
+        // Load pane
+        accountsPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        accountEditPane.setVisible(false);
+        userPane.setVisible(true);
+    }
+
+    // This method builds the data for the users table view. It is assembling a Map to hold the values.
     private ObservableList<Map> buildData(String sqlQry) {
         try {
             String url = "jdbc:mysql://localhost:3306/app_domain";
@@ -844,6 +1357,7 @@ public class AdminHomeController {
         }
     }
 
+    // This method calls the buildData() method. Used to refresh users table
     private void loadUsers() {
         System.out.println("[INFO] " + new Date().toString() + " Loading all users to table");
         String sqlQry = "SELECT userName, fName, lName, dob, email, admin, manager, accountant, active, suspendEnd, passwordAtt, passwordExpired  FROM app_domain.users";
@@ -851,111 +1365,7 @@ public class AdminHomeController {
         System.out.println("[INFO] " + new Date().toString() + " User load to table success");
     }
 
-    private void loadAccounts() {
-        System.out.println("[INFO] " + new Date().toString() + " Loading all accounts to table");
-        String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts";
-        accountsTableView.setItems(buildAccountData(sqlQry));
-        System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
-    }
-
-    private void loadLogs() {
-        System.out.println("[INFO] " + new Date().toString() + " Loading all logs to table");
-        String sqlQry = "SELECT * FROM app_domain.event_log";
-        logTable.setItems(buildLogData(sqlQry));
-        System.out.println("[INFO] " + new Date().toString() + " Logs load to table success");
-    }
-
-    private void formatLogTable() {
-        System.out.println("[INFO] " + new Date().toString() + " Formatting log table design");
-        logIDCol.setCellValueFactory(new MapValueFactory("idevent_log"));
-        logUIDCol.setCellValueFactory(new MapValueFactory("userid"));
-        logActCol.setCellValueFactory(new MapValueFactory("action"));
-        logAccNumCol.setCellValueFactory(new MapValueFactory("account_number"));
-        logMessageCol.setCellValueFactory(new MapValueFactory("message"));
-    }
-
-    private ObservableList<Map> buildLogData(String query) {
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildLogData()");
-            }
-
-            System.out.println("[INFO] " + new Date().toString() + " Building table data from sql query");
-            ObservableList<Map> logList = FXCollections.observableArrayList();
-            PreparedStatement getLogs = conn.prepareStatement(query);
-            ResultSet rs = getLogs.executeQuery();
-            while (rs.next()) {
-                Map<String, String> log = new HashMap<>();
-                log.put("idevent_log", String.valueOf(rs.getString("idevent_log")));
-                log.put("userid", String.valueOf(rs.getString("userid")));
-                log.put("action", String.valueOf(rs.getString("action")));
-                log.put("account_number", String.valueOf(rs.getString("account_number")));
-                log.put("message", String.valueOf(rs.getString("message")));
-                logList.add(log);
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Returning table data");
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildLogData()");
-            return logList;
-        }
-        catch(Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildLogData()");
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    private ObservableList<Map> buildAccountData(String query) {
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
-            }
-
-            System.out.println("[INFO] " + new Date().toString() + " Building table data from sql query");
-            ObservableList<Map> accountList = FXCollections.observableArrayList();
-            PreparedStatement getAccounts = conn.prepareStatement(query);
-            ResultSet rs = getAccounts.executeQuery();
-            while (rs.next()) {
-                Map<String, String> account = new HashMap<>();
-                account.put("accountNum", String.valueOf(rs.getString("accountNum")));
-                account.put("accountName", String.valueOf(rs.getString("accountName")));
-                account.put("category", String.valueOf(rs.getString("category")));
-                account.put("statement", String.valueOf(rs.getString("statement")));
-                accountList.add(account);
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Returning table data");
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildAccountData()");
-            return accountList;
-        }
-        catch(Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    private void formatAcctTable() {
-        System.out.println("[INFO] " + new Date().toString() + " Formatting account table design");
-        accountNumberCol.setCellValueFactory(new MapValueFactory("accountNum"));
-        accountNameCol.setCellValueFactory(new MapValueFactory("accountName"));
-        accountTypeCol.setCellValueFactory(new MapValueFactory("category"));
-        statementCol.setCellValueFactory(new MapValueFactory("statement"));
-    }
-
-
-
-    private void loadExpiredPasswords() {
-        System.out.println("[INFO] " + new Date().toString() + " Loading expired passwords to table");
-        String sqlQry = "SELECT userName, fName, lName, dob, email, admin, manager, accountant, active, suspendEnd, passwordAtt, passwordExpired  FROM app_domain.users where passwordExpired < CURDATE()";
-        usersTableView.setItems(buildData(sqlQry));
-        System.out.println("[INFO] " + new Date().toString() + " Load expired passwords to table success");
-    }
-
+    // This method formats the user table
     private void formatTable() {
         System.out.println("[INFO] " + new Date().toString() + " Formatting user table design");
         userNameCol.setCellValueFactory(new MapValueFactory("userName"));
@@ -980,6 +1390,7 @@ public class AdminHomeController {
         passExpCol.setStyle( "-fx-alignment: CENTER;");
     }
 
+    // This method assigns a listener to the expired password checkbox. Will be called when checkbox is pressed or unpressed
     private void setShowExpPassActions() {
         System.out.println("[INFO] " + new Date().toString() + " Setting expired password checkbox listener actions");
         expPassChkBx.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -995,103 +1406,15 @@ public class AdminHomeController {
         });
     }
 
-    private void setAccTypeCmbBxOptions() {
-        System.out.println("[INFO] " + new Date().toString() + " Setting account type combo box options");
-        ObservableList<String> accTypes = FXCollections.observableArrayList("Admin", "Manager", "Accountant");
-        accTypeCmbBx.setItems(accTypes);
+    // This method loads expired password users to the users table. Reuses the buildData() method
+    private void loadExpiredPasswords() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading expired passwords to table");
+        String sqlQry = "SELECT userName, fName, lName, dob, email, admin, manager, accountant, active, suspendEnd, passwordAtt, passwordExpired  FROM app_domain.users where passwordExpired < CURDATE()";
+        usersTableView.setItems(buildData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Load expired passwords to table success");
     }
 
-    private static boolean passwordValid(String pwd) {
-        if (pwd.length() < 8) {
-            System.out.println("Password length fail");
-            return false;
-        }
-        else if (!firstLetterIsChar(pwd)) {
-            return false;
-        }
-        else if (!containsIntAndSpecial(pwd)) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    private static boolean firstLetterIsChar(String pwd) {
-        char fLetter = pwd.charAt(0);
-        int letterUnicode = fLetter;
-
-        if ((letterUnicode > 64 && letterUnicode < 91) ||
-                (letterUnicode > 97 && letterUnicode < 123)) {
-            return true;
-        }
-
-        System.out.println("Password first char fail");
-        return false;
-    }
-
-    private static boolean containsIntAndSpecial(String pwd) {
-        boolean special = false;
-        boolean number = false;
-        char currentLetter;
-        for (int i = 0; i < pwd.length(); i++) {
-            currentLetter = pwd.charAt(i);
-
-            if (Character.isDigit(currentLetter))
-                number = true;
-            if ((currentLetter > 32 && currentLetter < 49) ||
-                    (currentLetter > 57 && currentLetter < 65) ||
-                    (currentLetter > 90 && currentLetter < 97) ||
-                    (currentLetter > 122 && currentLetter < 127))
-                special = true;
-
-            if (number && special)
-                return true;
-        }
-        System.out.println("Number or Special error");
-        return false;
-    }
-
-    /**
-     * Check username against other usernames in db. If match then add 'x' to end.
-     * @param uName
-     * @return
-     */
-    private static String verifyUsername(String uName) {
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. SignUpController.verifyUsername()");
-            }
-            // Checking for username in db
-            PreparedStatement unameChk = conn.prepareStatement("SELECT COUNT(*) FROM users WHERE userName like CONCAT('%', (?), '%')");
-            unameChk.setString(1, uName);
-            System.out.println("[INFO] " + new Date().toString() + " Begin username query");
-            ResultSet rs = unameChk.executeQuery();
-            System.out.println("[INFO] " + new Date().toString() + " Username query successful");
-            int numRecords = 0;
-            while (rs.next()) {
-                numRecords = rs.getInt(1);
-            }
-            if (numRecords == 0) {
-                System.out.println("[INFO] " + new Date().toString() + " Database connection closed. SignUpController.verifyUsername()");
-                return uName;
-            }
-            String uNameNew = uName + String.valueOf(numRecords);
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. SignUpController.verifyUsername()");
-            return uNameNew;
-        }
-
-        catch (Exception ex) {
-            System.out.println("Error connecting to db");
-            ex.printStackTrace();
-        }
-        System.out.println("[Fatal Error] " + new Date().toString() + " Username creation error");
-        return "Error Contact Admin";
-    }
-
+    // Method used to update a field in the users table if it was altered
     private void updateField(String colName, String updatedText, String userName) {
         try {
             System.out.println("[INFO] " + new Date().toString() + " Updating user user field " + colName);
@@ -1113,57 +1436,6 @@ public class AdminHomeController {
             System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.updateField()");
             ex.printStackTrace();
         }
-    }
-
-    private void setDoubleClickOpenAcct() {
-        accountsTableView.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                String accountNum = (String) accountsTableView.getSelectionModel().getSelectedItem().get("accountNum");
-                loadThisAccount(accountNum);
-            }
-        });
-    }
-
-    private void loadThisAccount(String accNum) {
-
-        Account.setAccount(accNum);
-
-        accNameTxt.setText(UNFILLED_ACCT_NAME + Account.getAccountName());
-        accNumTxt.setText(UNFILLED_ACCT_NUM + Account.getAccountNumber());
-        accDescTxt.setText(UNFILLED_ACCT_DESC + Account.getAccountDescription());
-        createdTxt.setText(UNFILLED_CREATED + Account.getCreated());
-        normalSideTxt.setText(UNFILLED_NORM_SIDE + Account.getNormalSide());
-        initBalTxt.setText(UNFILLED_INIT_BAL + Account.getInitialBalance());
-        balTxt.setText(UNFILLED_BAL + Account.getBalance());
-        statementTxt.setText(UNFILLED_STATEMENT + Account.getStatement());
-        activeTxt.setText(UNFILLED_ACTIVE + Account.getActive());
-        categoryTxt.setText(UNFILLED_CAT + Account.getCategory());
-        subcatTxt.setText(UNFILLED_SUBCAT + Account.getSubcategory());
-
-        accountsPane.setVisible(false);
-        userPane.setVisible(false);
-        singleAccountPane.setVisible(true);
-        }
-
-    @FXML
-    void onReturnPressed(ActionEvent event) {
-        accNameTxt.setText(UNFILLED_ACCT_NAME);
-        accNumTxt.setText(UNFILLED_ACCT_NUM);
-        accDescTxt.setText(UNFILLED_ACCT_DESC);
-        createdTxt.setText(UNFILLED_CREATED);
-        normalSideTxt.setText(UNFILLED_NORM_SIDE);
-        initBalTxt.setText(UNFILLED_INIT_BAL);
-        balTxt.setText(UNFILLED_BAL);
-        statementTxt.setText(UNFILLED_STATEMENT);
-        activeTxt.setText(UNFILLED_ACTIVE);
-        categoryTxt.setText(UNFILLED_CAT);
-        subcatTxt.setText(UNFILLED_SUBCAT);
-
-        Account.clearAccount();
-
-        singleAccountPane.setVisible(false);
-        userPane.setVisible(false);
-        accountsPane.setVisible(true);
     }
 
     private void setUserTableFieldsEditable() {
@@ -1325,170 +1597,5 @@ public class AdminHomeController {
         );
     }
 
-    private boolean validateAccountNumberUnique() {
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountNumber()");
-            }
-            PreparedStatement emailChk = conn.prepareStatement("SELECT COUNT(*) FROM accounts WHERE accountNum like (?)");
-            emailChk.setString(1, accountNumberField.getText());
-            System.out.println("[INFO] " + new Date().toString() + " Begin account number check query");
-            ResultSet rsAccNum = emailChk.executeQuery();
-            System.out.println("[INFO] " + new Date().toString() + " Account number check query success");
-            int numAccts = -1;
-            while (rsAccNum.next()) {
-                numAccts = rsAccNum.getInt(1);
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.validateAccountNumber()");
-            if (numAccts != 0) {
-                return false;
-            }
-            else
-                return true;
-        }
-        catch (Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.validateAccountNumber()");
-            System.err.println(ex.getMessage());
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean validateAccountNameUnique() {
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountName()");
-            }
-            PreparedStatement emailChk = conn.prepareStatement("SELECT COUNT(*) FROM accounts WHERE accountName like (?)");
-            emailChk.setString(1, accountNameField.getText());
-            System.out.println("[INFO] " + new Date().toString() + " Begin account name check query");
-            ResultSet rsAccNme = emailChk.executeQuery();
-            System.out.println("[INFO] " + new Date().toString() + " Account name check query success");
-            int numAccts = -1;
-            while (rsAccNme.next()) {
-                numAccts = rsAccNme.getInt(1);
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.validateAccountName()");
-            if (numAccts != 0) {
-                return false;
-            }
-            else
-                return true;
-
-        }
-        catch (Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.validateAccountName()");
-            System.err.println(ex.getMessage());
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    void setCategoryCmbBx() {
-        System.out.println("[INFO] " + new Date().toString() + " Setting category type combo box options");
-        ObservableList<String> catTypes = FXCollections.observableArrayList("Asset", "Liability", "Equity");
-        categoryCmbBx.setItems(catTypes);
-        newCatCmbBx.setItems(catTypes);
-    }
-
-    void setStatementCmbBx() {
-        System.out.println("[INFO] " + new Date().toString() + " Setting statement type combo box options");
-        ObservableList<String> statementTypes = FXCollections.observableArrayList("IS", "BS", "RE");
-        statementCmbBx.setItems(statementTypes);
-        newStatementCmbBx.setItems(statementTypes);
-    }
-
-    void setNormalSideCmbBx() {
-        System.out.println("[INFO] " + new Date().toString() + " Setting normal side type combo box options");
-        ObservableList<String> normalSideTypes = FXCollections.observableArrayList("Credit", "Debit");
-        normalSideCmbBx.setItems(normalSideTypes);
-        newNormalSideCombBx.setItems(normalSideTypes);
-    }
-
-    @FXML
-    void onEditPressed() {
-        deacAlertText.setText("");
-        newAccountNameFld.setText(Account.getAccountName());
-        newAccountDescFld.setText(Account.getAccountDescription());
-
-        singleAccountPane.setVisible(false);
-        accountEditPane.setVisible(true);
-    }
-
-
-    @FXML
-    void onDeactivatePressed() {
-        if (Account.getBalance().equals("0")) {
-            deacAlertText.setText("");
-            // todo - set account active to 0.
-            String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " deactivated an account. Account Name: " + Account.getAccountName() + ". Account Number: "
-                    + Account.getAccountNumber() + ".";
-            EventLog.createEventLog(GlobalUser.getIdUsers(), "Deactivate", Account.getAccountNumber(), message);
-        }
-        else
-            deacAlertText.setText("ERROR: Cannot deactivate account with balance greater than 0");
-    }
-
-    @FXML
-    void onCancelPressed() {
-        deacAlertText.setText("");
-        accountEditPane.setVisible(false);
-        loadThisAccount(Account.getAccountNumber());
-        singleAccountPane.setVisible(true);
-    }
-
-    @FXML
-    void onSavePressed() {
-        confirmationTxt.setText("");
-        try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database ForgotPasswordController.onNewPassSubmit()");
-            }
-
-            if (!(newAccountNameFld.getText() == null) && !(newAccountDescFld.getText() == null) && !(newNormalSideCombBx.getValue() == null) && !(newStatementCmbBx.getValue() == null) && !(newCatCmbBx.getValue() == null) && !(newSubCatCmbBx.getValue() == null)) {
-                PreparedStatement updateAcct = conn.prepareStatement("update accounts set accountName = (?)," +
-                        " accountDesc = (?), normalSide = (?), statement = (?)," +
-                        " category = (?), subcategory = (?) where idaccounts = (?)");
-                updateAcct.setString(1, newAccountNameFld.getText());
-                updateAcct.setString(2, newAccountDescFld.getText());
-                updateAcct.setString(3, newNormalSideCombBx.getValue());
-                updateAcct.setString(4, newStatementCmbBx.getValue());
-                updateAcct.setString(5, newCatCmbBx.getValue());
-                updateAcct.setString(6, newSubCatCmbBx.getValue());
-                updateAcct.setInt(7, Account.getAccountId());
-                updateAcct.executeUpdate();
-
-                confirmationTxt.setText("Update successful! Returning to account page");
-
-                sleep(3000);
-
-                String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " updated an account. Account Number: "
-                        + Account.getAccountNumber() + ". New Values: Account Name: " + newAccountNameFld.getText() + ". Account Description: "+ newAccountDescFld.getText() +
-                        ". Normal Side: " + newNormalSideCombBx.getValue() + ". Statement: " + newStatementCmbBx.getValue() + ". Category: " + newCatCmbBx.getValue() + ". Subcategory: " + newSubCatCmbBx.getValue() + ".";
-
-                EventLog.createEventLog(GlobalUser.getIdUsers(), "Update", Account.getAccountNumber(), message);
-
-                accountEditPane.setVisible(false);
-                loadThisAccount(Account.getAccountNumber());
-                singleAccountPane.setVisible(true);
-            }
-            else {
-                confirmationTxt.setText("ERROR: Please fill all fields");
-            }
-            conn.close();
-        }
-        catch(Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.onSavePressed()");
-            ex.printStackTrace();
-        }
-    }
 
 }

@@ -31,6 +31,7 @@ public class Account {
             PreparedStatement loadAcct = conn.prepareStatement("select * from accounts where accountNum = (?)");
             loadAcct.setString(1, accountNum);
             ResultSet rs = loadAcct.executeQuery();
+            System.out.println("[INFO] " + new Date().toString() + " Setting global account parameters");
             while (rs.next()) {
                 accountId = rs.getInt(1);
                 accountNumber = rs.getString(2);
@@ -51,10 +52,12 @@ public class Account {
             }
 
             conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " CDatabase connection closed. Account.setAccount()");
 
         }
         catch (Exception ex) {
             System.out.println("Error connecting to db");
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " Account.setAccount()");
             ex.printStackTrace();
         }
 

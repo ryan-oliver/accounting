@@ -249,7 +249,7 @@
                </tooltip></Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="accountEditPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+      <AnchorPane fx:id="accountEditPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="240.0" layoutX="270.0" layoutY="74.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="3.0" width="467.0" />
             <Text fx:id="accNameTxt1" fill="#9f7c3f" layoutX="300.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Name:" wrappingWidth="437.681640625">
