@@ -5,11 +5,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.Date;
 
+/**
+ * This class generates an event log. It is called an time an account is created, edited, or deactivated
+ */
+
 public class EventLog {
 
     public static void createEventLog(int userID, String action, String accountNumber, String message) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. EventLog");

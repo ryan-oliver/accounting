@@ -27,24 +27,27 @@ public class LoginController {
     private Text alertText;
 
 
+    // Open sign up window
     @FXML
     void signUpWin(ActionEvent event) {
         SceneSwitch.switchScene("Sign Up.fxml", getClass());
         System.out.println("[INFO] " + new Date().toString() + " Transferring to sign up screen from login screen");
     }
 
+    // Open forgot password window
     @FXML
     void onForgotPassword(ActionEvent event) {
         SceneSwitch.switchScene("Forgot Password.fxml", getClass());
         System.out.println("[INFO] " + new Date().toString() + " Transferring to forgot password screen from login screen");
     }
 
+    // Process a sign in attempt
     @FXML
     void onSignIn(ActionEvent event) {
 
         try {
             // Establishing connection to db
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. LoginController.onSignIn()");
@@ -108,6 +111,7 @@ public class LoginController {
 
     }
 
+    // Log in a non-admin account
     private void logInUser() {
         // Check password
         if (GlobalUser.getPassword().equals(password.getText())) {
@@ -118,7 +122,7 @@ public class LoginController {
                     if (GlobalUser.getPasswordAtt() < 4) {
                         try {
 
-                            String url = "jdbc:mysql://localhost:3306/app_domain";
+                            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
                             Connection conn = DriverManager.getConnection(url, "root", "password");
                             if (conn != null) {
                                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. LoginController.logInUser()");
@@ -159,7 +163,7 @@ public class LoginController {
             System.out.println("[ERROR] " + new Date().toString() + " Username / password not matched. Incrementing password attempts in db");
             alertText.setText("ERROR: Username or password incorrect");
             try {
-                String url = "jdbc:mysql://localhost:3306/app_domain";
+                String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
                 Connection conn = DriverManager.getConnection(url, "root", "password");
                 if (conn != null) {
                     System.out.println("[INFO] " + new Date().toString() + " Connected to the database. LoginController.logInUser()");
@@ -182,6 +186,7 @@ public class LoginController {
         }
     }
 
+    // log in admin account
     void logInAdmin() {
         // Check password
         if (GlobalUser.getPassword().equals(password.getText())) {

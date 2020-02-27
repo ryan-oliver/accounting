@@ -6,12 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main application class. Process will run from here.
+ */
+
 public class Main extends Application {
 
     private static Stage pStage;
 
     // todo - tool tips
-    // todo - add in console logging
     // todo - help button
 
 

@@ -38,7 +38,7 @@ public class GlobalUser {
      */
     public static void setUser(int iduser) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. GlobalUser.setUSer()");

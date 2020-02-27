@@ -27,6 +27,10 @@ import java.util.Map;
 
 // todo - add search from admin
 
+/**
+ * This class controls the user page after login. Currently used for manager and for accountant.
+ */
+
 public class UserHomeController {
 
     private final Color REG_BUTTON_COLOR = Color.web("#a4a6a8");
@@ -128,6 +132,9 @@ public class UserHomeController {
     @FXML
     private Button returnToAllAccountsBtn;
 
+    /**
+     * Called before loading pane. Loads data.
+     */
     @FXML
     public void initialize() {
         userName.setText(GlobalUser.getUserName());
@@ -138,6 +145,11 @@ public class UserHomeController {
         loadAccounts();
         setDoubleClickOpenAcct();
     }
+
+    /**
+     * Home button methods
+     * @param event
+     */
 
     @FXML
     void onHomeBtnEntered(MouseEvent event) {
@@ -154,6 +166,11 @@ public class UserHomeController {
         accountsPane.setVisible(false);
         singleAccountPane.setVisible(false);
     }
+
+    /**
+     * Logout button methods
+     * @param event
+     */
 
     @FXML
     void onLogoutBtnEntered(MouseEvent event) {
@@ -172,6 +189,11 @@ public class UserHomeController {
         SceneSwitch.switchScene("Login.fxml", getClass());
     }
 
+    /**\
+     * Accounts view methods
+     * @param event
+     */
+
     @FXML
     void onAccountsClicked(MouseEvent event) {
         singleAccountPane.setVisible(false);
@@ -186,9 +208,9 @@ public class UserHomeController {
     @FXML
     void onAccountsExited(MouseEvent event) {
         accountsBtn.setFill(REG_BUTTON_COLOR);
-
     }
 
+    // Returns single account view text to default
     @FXML
     void onReturnPressed(ActionEvent event) {
         accNameTxt.setText(UNFILLED_ACCT_NAME);
@@ -224,6 +246,7 @@ public class UserHomeController {
         searchBtn.setFill(REG_SEARCH_COLOR);
     }
 
+    // Used to set up account table mapping
     private void formatAcctTable() {
         System.out.println("[INFO] " + new Date().toString() + " Formatting account table design");
         accountNumberCol.setCellValueFactory(new MapValueFactory("accountNum"));
@@ -232,6 +255,7 @@ public class UserHomeController {
         statementCol.setCellValueFactory(new MapValueFactory("statement"));
     }
 
+    // Used to load accounts to table
     private void loadAccounts() {
         System.out.println("[INFO] " + new Date().toString() + " Loading all accounts to table");
         String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts";
@@ -239,9 +263,10 @@ public class UserHomeController {
         System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
     }
 
+    // Used to build data for accounts table
     private ObservableList<Map> buildAccountData(String query) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
@@ -271,6 +296,7 @@ public class UserHomeController {
         }
     }
 
+    // Sets account table mouse action
     private void setDoubleClickOpenAcct() {
         accountsTableView.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
@@ -280,6 +306,7 @@ public class UserHomeController {
         });
     }
 
+    // Helper for table mouse action. Sets single account view text information.
     private void loadThisAccount(String accNum) {
 
         Account.setAccount(accNum);

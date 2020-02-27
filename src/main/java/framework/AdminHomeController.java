@@ -354,7 +354,7 @@ public class AdminHomeController {
             boolean emailExists = false;
             int numRecords = 0;
             // Establish the connection to the database
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onAddUser()");
@@ -574,7 +574,7 @@ public class AdminHomeController {
     // This method builds the data for the account table view. It is assembling a Map to hold the values.
     private ObservableList<Map> buildAccountData(String query) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
@@ -682,7 +682,7 @@ public class AdminHomeController {
 
     private boolean validateAccountNumberUnique() {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountNumber()");
@@ -714,7 +714,7 @@ public class AdminHomeController {
 
     private boolean validateAccountNameUnique() {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.validateAccountName()");
@@ -818,7 +818,7 @@ public class AdminHomeController {
     void onSavePressed() {
         confirmationTxt.setText("");
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database AdminHomeController.onSavePressed()");
@@ -889,7 +889,7 @@ public class AdminHomeController {
                         int userID = GlobalUser.getIdUsers();
 
                         try {
-                            String url = "jdbc:mysql://localhost:3306/app_domain";
+                            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
                             Connection conn = DriverManager.getConnection(url, "root", "password");
                             if (conn != null) {
                                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onSubmitClicked()");
@@ -1075,7 +1075,7 @@ public class AdminHomeController {
     // Method to check username against other usernames in db. If match then add 'x' to end of username.
     private static String verifyUsername(String uName) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. SignUpController.verifyUsername()");
@@ -1154,7 +1154,7 @@ public class AdminHomeController {
     // This method builds the data for the event log table view. It is assembling a Map to hold the values.
     private ObservableList<Map> buildLogData(String query) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildLogData()");
@@ -1319,7 +1319,7 @@ public class AdminHomeController {
     // This method builds the data for the users table view. It is assembling a Map to hold the values.
     private ObservableList<Map> buildData(String sqlQry) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildData()");
@@ -1419,7 +1419,7 @@ public class AdminHomeController {
         try {
             System.out.println("[INFO] " + new Date().toString() + " Updating user user field " + colName);
             alertText.setText("");
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database AdminHomeController.updateField()");

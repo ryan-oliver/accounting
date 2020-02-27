@@ -12,6 +12,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * This class controls the forgot password screen.
+ */
+
 public class ForgotPasswordController {
 
     @FXML
@@ -65,7 +69,7 @@ public class ForgotPasswordController {
         System.out.println("[INFO] " + new Date().toString() + " Canceling forgot password. Returning to login. Clearing user");
     }
 
-    // Submit uname and pass
+    // Submit uname and pass. Ensures that username matches email on record
     @FXML
     void onSubmit(ActionEvent event) {
         try {
@@ -76,7 +80,7 @@ public class ForgotPasswordController {
             boolean emailExists = false;
             int numRecordsEml = 0;
             // Establish the connection to the database
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. ForgotPasswordController.onSubmit()");
@@ -160,12 +164,75 @@ public class ForgotPasswordController {
         }
     }
 
-    // Submit new password
+    //  Submit secret question answer after account is verified to exist
+    @FXML
+    void onSubmitCode(ActionEvent event) {
+        try {
+            errorText.setText("");
+            // Establish the connection to the database
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. ForgotPasswordController.onSubmitCode()");
+            }
+            String secretQAnswer = "";
+            PreparedStatement getSecQ = conn.prepareStatement("SELECT secretQAnswer from users where userName = (?)");
+            getSecQ.setString(1, userName.getText());
+            System.out.println("[INFO] " + new Date().toString() + " Begin get secret question and answer query");
+            ResultSet setOfSecrets = getSecQ.executeQuery();
+            System.out.println("[INFO] " + new Date().toString() + " Secret question and answer query success");
+            while (setOfSecrets.next()) {
+                secretQAnswer = setOfSecrets.getString(1);
+            }
+            String secretQAnswerLower = secretQAnswer.toLowerCase();
+            String secretQCorrectAnsLower = secretAnsField.getText().toLowerCase();
+            if (secretQAnswerLower.equals(secretQCorrectAnsLower)) {
+                // Answer was correct, remove old fields and show reset password fields
+                secretAnsField.setVisible(false);
+                questionString.setVisible(false);
+                secAnsSub.setVisible(false);
+                secretQuestion.setVisible(false);
+
+                codeSuccStr.setVisible(true);
+                newPassSub.setVisible(true);
+                newPassword.setVisible(true);
+                newPasswordConf.setVisible(true);
+
+                // Getting unique id for new user
+                PreparedStatement getUIDStmt = conn.prepareStatement("SELECT idusers FROM users WHERE userName = (?)");
+                getUIDStmt.setString(1, userName.getText());
+                System.out.println("[INFO] " + new Date().toString() + " Begin user id query");
+                ResultSet uIDrs = getUIDStmt.executeQuery();
+                System.out.println("[INFO] " + new Date().toString() + " GlobalUser id query success");
+                uID = -1;
+                while (uIDrs.next()) {
+                    uID = uIDrs.getInt(1);
+                }
+
+                // Setting user
+                GlobalUser.setUser(uID);
+                System.out.println("[INFO] " + new Date().toString() + " Global user set");
+
+                System.out.println("Secret question answered successfully. Opening connection to reset password.");
+            }
+            else {
+                errorText.setText("ERROR: Sorry that is not correct");
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. ForgotPasswordController.onSubmitCode()");
+        }
+        catch (Exception ex) {
+            System.out.println("Error connecting to db");
+            ex.printStackTrace();
+        }
+    }
+
+    // Submit new password after secret question answered
     @FXML
     void onNewPassSubmit(ActionEvent event) {
         try {
             errorText.setText("");
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database ForgotPasswordController.onNewPassSubmit()");
@@ -227,69 +294,6 @@ public class ForgotPasswordController {
 
     }
 
-    //  Submit secret question answer
-    @FXML
-    void onSubmitCode(ActionEvent event) {
-        try {
-            errorText.setText("");
-            // Establish the connection to the database
-            String url = "jdbc:mysql://localhost:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. ForgotPasswordController.onSubmitCode()");
-            }
-            String secretQAnswer = "";
-            PreparedStatement getSecQ = conn.prepareStatement("SELECT secretQAnswer from users where userName = (?)");
-            getSecQ.setString(1, userName.getText());
-            System.out.println("[INFO] " + new Date().toString() + " Begin get secret question and answer query");
-            ResultSet setOfSecrets = getSecQ.executeQuery();
-            System.out.println("[INFO] " + new Date().toString() + " Secret question and answer query success");
-            while (setOfSecrets.next()) {
-                secretQAnswer = setOfSecrets.getString(1);
-            }
-            String secretQAnswerLower = secretQAnswer.toLowerCase();
-            String secretQCorrectAnsLower = secretAnsField.getText().toLowerCase();
-            if (secretQAnswerLower.equals(secretQCorrectAnsLower)) {
-                // Answer was correct, remove old fields and show reset password fields
-                secretAnsField.setVisible(false);
-                questionString.setVisible(false);
-                secAnsSub.setVisible(false);
-                secretQuestion.setVisible(false);
-
-                codeSuccStr.setVisible(true);
-                newPassSub.setVisible(true);
-                newPassword.setVisible(true);
-                newPasswordConf.setVisible(true);
-
-                // Getting unique id for new user
-                PreparedStatement getUIDStmt = conn.prepareStatement("SELECT idusers FROM users WHERE userName = (?)");
-                getUIDStmt.setString(1, userName.getText());
-                System.out.println("[INFO] " + new Date().toString() + " Begin user id query");
-                ResultSet uIDrs = getUIDStmt.executeQuery();
-                System.out.println("[INFO] " + new Date().toString() + " GlobalUser id query success");
-                uID = -1;
-                while (uIDrs.next()) {
-                    uID = uIDrs.getInt(1);
-                }
-
-                // Setting user
-                GlobalUser.setUser(uID);
-                System.out.println("[INFO] " + new Date().toString() + " Global user set");
-
-                System.out.println("Secret question answered successfully. Opening connection to reset password.");
-            }
-            else {
-                errorText.setText("ERROR: Sorry that is not correct");
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. ForgotPasswordController.onSubmitCode()");
-        }
-        catch (Exception ex) {
-            System.out.println("Error connecting to db");
-            ex.printStackTrace();
-        }
-    }
-
     private static boolean passwordValid(String pwd) {
         if (pwd.length() < 8) {
             System.out.println("Password length fail");
@@ -343,7 +347,7 @@ public class ForgotPasswordController {
 
     private static boolean passwordHasBeenUsed(String pwd, int iduser) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("Connected to the database");

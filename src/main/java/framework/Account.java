@@ -23,7 +23,7 @@ public class Account {
     public static void setAccount(String accountNum) {
         try {
 
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. Account.setAccount()");
@@ -52,7 +52,7 @@ public class Account {
             }
 
             conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " CDatabase connection closed. Account.setAccount()");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. Account.setAccount()");
 
         }
         catch (Exception ex) {

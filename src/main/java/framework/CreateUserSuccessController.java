@@ -12,6 +12,10 @@ import javafx.scene.text.Text;
 import java.util.Date;
 
 
+/**
+ * This class controls the create new user success screen
+ */
+
 public class CreateUserSuccessController {
 
     @FXML

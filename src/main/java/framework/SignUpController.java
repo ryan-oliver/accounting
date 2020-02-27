@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Class for controlling the sign up page
+ */
+
 public class SignUpController {
 
     @FXML
@@ -54,12 +58,14 @@ public class SignUpController {
     @FXML
     private ToggleGroup tg;
 
+    // If log in button is pressed. Returns to main landing page
     @FXML
     void onLogIn(ActionEvent event) {
         SceneSwitch.switchScene("Login.fxml", getClass());
         System.out.println("[INFO] " + new Date().toString() + " Transferring to login screen from sign in screen");
     }
 
+    // Attempts to add user to db. This transfers to success screen if inert is successful
     @FXML
     void onSignUp(ActionEvent event) {
 
@@ -69,7 +75,7 @@ public class SignUpController {
             boolean emailExists = false;
             int numRecords = 0;
             // Establish the connection to the database
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. SignUpController.onSignUp()");
@@ -280,7 +286,7 @@ public class SignUpController {
      */
     private static String verifyUsername(String uName) {
         try {
-            String url = "jdbc:mysql://localhost:3306/app_domain";
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. SignUpController.verifyUsername()");
