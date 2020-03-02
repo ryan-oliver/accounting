@@ -7,6 +7,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.Tooltip?>
@@ -25,6 +26,11 @@
       <ImageView fx:id="profilePicture" fitHeight="46.0" fitWidth="46.0" layoutX="1140.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:img/avatar.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="mailIcon" fitHeight="46.0" fitWidth="46.0" layoutX="230.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="file:img/no_mail.png" />
          </image>
       </ImageView>
       <Text fx:id="userName" fill="WHITE" layoutX="895.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " textAlignment="RIGHT" wrappingWidth="233.79827880859375">
@@ -320,5 +326,45 @@
             </TableView>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="mailPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+         <children>
+            <AnchorPane fx:id="mailTablePane" layoutX="10.0" layoutY="94.0" visible="false">
+               <children>
+                  <TableView fx:id="mailTable" editable="true" layoutY="36.0" prefHeight="598.0" prefWidth="976.0" stylesheets="file:stylesheets/admin_user-table.css">
+                     <columns>
+                        <TableColumn fx:id="mailDateCol" prefWidth="67.38824462890625" text="Date" />
+                        <TableColumn fx:id="mailFromCol" prefWidth="61.0028076171875" text="From" />
+                        <TableColumn fx:id="mailSubjectCol" prefWidth="71.85568237304688" text="Subject" />
+                        <TableColumn fx:id="mailMessageCol" prefWidth="771.6685791015625" text="Message" />
+                     </columns>
+                  </TableView>
+                  <Button fx:id="newMessageBtn" layoutX="12.0" mnemonicParsing="false" onMouseClicked="#onNewMessagePressed" text="New Message" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="openMessagePane" layoutX="10.0" layoutY="90.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="613.0" layoutY="34.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="976.0" />
+                  <Text fx:id="msgFromTxt" fill="#9f7c3f" layoutX="30.0" layoutY="65.431640625" strokeType="OUTSIDE" strokeWidth="0.0" text="From: " />
+                  <Text fx:id="msgDateTxt" fill="#9f7c3f" layoutX="30.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date: " />
+                  <Text fx:id="msgSubjectTxt" fill="#9f7c3f" layoutX="30.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject: " />
+                  <Line endX="792.8702392578125" endY="-1.6157073974609375" layoutX="168.0" layoutY="136.0" startX="-149.11781311035156" startY="-1.6157073974609375" stroke="#9f7c3f" strokeWidth="0.5" />
+                  <Text fx:id="msgContentTxt" fill="#9f7c3f" layoutX="30.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="910.9571838378906" />
+                  <Button fx:id="mailReturnBtn" layoutX="4.0" mnemonicParsing="false" onMouseClicked="#onMailReturnPressed" text="Return" />
+                  <Button fx:id="mailReplyBtn" layoutX="917.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onMessageReplyPressed" text="Reply" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="newMessagePane" layoutX="38.0" layoutY="64.0" prefHeight="690.0" prefWidth="776.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="662.0" layoutX="145.0" layoutY="11.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="648.0" />
+                  <TextField fx:id="newMessageToFld" layoutX="180.0" layoutY="31.0" promptText="To" />
+                  <TextField fx:id="newMessageSubjectFld" layoutX="180.0" layoutY="74.0" promptText="Subject" />
+                  <TextArea fx:id="newMessageFld" layoutX="180.0" layoutY="129.0" prefHeight="484.0" prefWidth="577.0" promptText="Message" />
+                  <Button fx:id="newMessageSendBtn" layoutX="702.0" layoutY="629.0" mnemonicParsing="false" onMouseClicked="#onNewMessageSend" text="Send" />
+                  <Button fx:id="cancelNewMessageBtn" layoutX="46.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#onNewMessageCancel" text="Cancel" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <Rectangle fx:id="mailBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="230.0" layoutY="17.0" onMouseClicked="#onMailBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
    </children>
 </AnchorPane>

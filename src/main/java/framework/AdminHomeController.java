@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -53,6 +54,11 @@ public class AdminHomeController {
     private final String UNFILLED_ACTIVE = "Active: ";
     private final String UNFILLED_CAT = "Category: ";
     private final String UNFILLED_SUBCAT = "Subcategory: ";
+
+    private final String UNFILLED_FROM = "From: ";
+    private final String UNFILLED_SUBJ = "Subject: ";
+    private final String UNFILLED_DATE = "Date: ";
+    private final String UNFILLED_MSG = "";
 
     @FXML
     private ImageView profilePicture;
@@ -309,6 +315,253 @@ public class AdminHomeController {
     @FXML
     private Rectangle logBtn;
 
+    @FXML
+    private ImageView mailIcon;
+
+    @FXML
+    private Rectangle mailBtn;
+
+    @FXML
+    private AnchorPane mailPane;
+
+    @FXML
+    private AnchorPane mailTablePane;
+
+    @FXML
+    private TableView<Map> mailTable;
+
+    @FXML
+    private TableColumn mailMessageCol;
+
+    @FXML
+    private TableColumn mailSubjectCol;
+
+    @FXML
+    private TableColumn mailFromCol;
+
+    @FXML
+    private TableColumn mailDateCol;
+
+    @FXML
+    private Button newMessageBtn;
+
+    @FXML
+    private AnchorPane openMessagePane;
+
+    @FXML
+    private Button mailReturnBtn;
+
+    @FXML
+    private Button mailReplyBtn;
+
+    @FXML
+    private Text msgFromTxt;
+
+    @FXML
+    private Text msgDateTxt;
+
+    @FXML
+    private Text msgSubjectTxt;
+
+    @FXML
+    private Text msgContentTxt;
+
+    @FXML
+    private AnchorPane newMessagePane;
+
+    @FXML
+    private Button newMessageSendBtn;
+
+    @FXML
+    private Button cancelNewMessageBtn;
+
+    @FXML
+    private TextField newMessageToFld;
+
+    @FXML
+    private TextField newMessageSubjectFld;
+
+    @FXML
+    private TextArea newMessageFld;
+
+    /**
+     * Mail methods
+     */
+
+    @FXML
+    void onMailBtnPressed(MouseEvent event) {
+        userPane.setVisible(false);
+        accountsPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        accountEditPane.setVisible(false);
+        logPane.setVisible(false);
+
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+        newMessagePane.setVisible(false);
+        openMessagePane.setVisible(false);
+
+        // Method to build table data
+    }
+
+    // This method calls the buildAccountData() method. Used to refresh table of accounts
+    private void loadMessages() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all messages to table");
+        String sqlQry = "SELECT `date`, `from`, `subject`, `message`, idmessage from `message` where `to` = \"" + GlobalUser.getUserName() + "\"";
+        mailTable.setItems(buildMessageTableData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Messages load to table success");
+    }
+
+    private ObservableList<Map> buildMessageTableData(String query) {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildMessageTableData()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building message table data from sql query");
+            ObservableList<Map> messageList = FXCollections.observableArrayList();
+            PreparedStatement getMessages = conn.prepareStatement(query);
+            ResultSet rs = getMessages.executeQuery();
+            while (rs.next()) {
+                Map<String, String> message = new HashMap<>();
+                message.put("date", String.valueOf(rs.getString("date")));
+                message.put("from", String.valueOf(rs.getString("from")));
+                message.put("subject", String.valueOf(rs.getString("subject")));
+                message.put("message", String.valueOf(rs.getString("message")));
+                message.put("id", String.valueOf(rs.getInt("idmessage")));
+                messageList.add(message);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning message table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildMessageTableData()");
+            return messageList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildMessageTableData()");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    private void formatMesgTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting message table design");
+        mailDateCol.setCellValueFactory(new MapValueFactory("date"));
+        mailFromCol.setCellValueFactory(new MapValueFactory("from"));
+        mailSubjectCol.setCellValueFactory(new MapValueFactory("subject"));
+        mailMessageCol.setCellValueFactory(new MapValueFactory("message"));
+    }
+
+    private void setDoubleClickOpenMessage() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting message table mouse actions");
+
+        mailTable.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String messageid = (String) mailTable.getSelectionModel().getSelectedItem().get("id");
+                loadThisMessage(messageid);
+            }
+        });
+    }
+
+    private void loadThisMessage(String id) {
+        System.out.println("[INFO] " + new Date().toString() + " Setting global message");
+        Message.setMessage(id);
+
+        msgFromTxt.setText(UNFILLED_FROM + Message.getFrom());
+        msgDateTxt.setText(UNFILLED_DATE + Message.getDate());
+        msgSubjectTxt.setText(UNFILLED_SUBJ + Message.getSubject());
+        msgContentTxt.setText(Message.getMessage());
+
+        mailTablePane.setVisible(false);
+        newMessagePane.setVisible(false);
+        openMessagePane.setVisible(true);
+    }
+
+    @FXML
+    void onMailReturnPressed(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Clearing message text fields of unique data and resetting view");
+        Message.clearMessage();
+        loadMessages();
+
+        msgFromTxt.setText(UNFILLED_FROM);
+        msgDateTxt.setText(UNFILLED_DATE);
+        msgSubjectTxt.setText(UNFILLED_SUBJ);
+        msgContentTxt.setText("");
+
+        openMessagePane.setVisible(false);
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+    }
+
+    @FXML
+    void onNewMessagePressed() {
+        openMessagePane.setVisible(false);
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(false);
+        newMessagePane.setVisible(true);
+    }
+
+    @FXML
+    void onNewMessageCancel() {
+
+        newMessageToFld.setText("");
+        newMessageSubjectFld.setText("");
+        newMessageFld.setText("");
+
+        openMessagePane.setVisible(false);
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+        newMessagePane.setVisible(false);
+    }
+
+    @FXML
+    void onNewMessageSend() {
+        String to = newMessageToFld.getText();
+        String subject = newMessageSubjectFld.getText();
+        String message = newMessageFld.getText();
+        LocalDate today = LocalDate.now();
+
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AHC.onNewMessageSend()");
+            }
+
+            PreparedStatement sendMsg = conn.prepareStatement("INSERT INTO message values (null, \""+ GlobalUser.getUserName() + "\", \"" + to + "\", \""
+             + today + "\", \"" + subject + "\", \"" + message + "\")");
+            sendMsg.executeUpdate();
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AHC.onNewMessageSend()");
+        }
+        catch (Exception ex) {
+            System.out.println("Error connecting to db");
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AHC.onNewMessageSend()");
+            ex.printStackTrace();
+        }
+
+        newMessageToFld.setText("");
+        newMessageSubjectFld.setText("");
+        newMessageFld.setText("");
+
+        openMessagePane.setVisible(false);
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+        newMessagePane.setVisible(false);
+        loadMessages();
+    }
+
+    @FXML
+    void onMessageReplyPressed() {
+        newMessageToFld.setText(Message.getFrom());
+        newMessageSubjectFld.setText("RE: " + Message.getSubject());
+
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(true);
+        Message.clearMessage();
+        loadMessages();
+    }
 
     /**
      * Initialize method is called before primary screen is loaded. Place setup methods here.
@@ -324,12 +577,20 @@ public class AdminHomeController {
         singleAccountPane.setVisible(false);
         accountEditPane.setVisible(false);
         logPane.setVisible(false);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
+
         formatTable();
         formatAcctTable();
         formatLogTable();
+        formatMesgTable();
         loadUsers();
         loadAccounts();
         loadLogs();
+        loadMessages();
         setShowExpPassActions();
         setAccTypeCmbBxOptions();
         setUserTableFieldsEditable();
@@ -337,9 +598,11 @@ public class AdminHomeController {
         setStatementCmbBx();
         setNormalSideCmbBx();
         setDoubleClickOpenAcct();
+        setDoubleClickOpenMessage();
 
         System.out.println("[INFO] " + new Date().toString() + " Admin home page init success");
     }
+
 
 
     /**
@@ -508,6 +771,11 @@ public class AdminHomeController {
         singleAccountPane.setVisible(false);
         accountEditPane.setVisible(false);
         accountsPane.setVisible(true);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
     }
 
     @FXML
@@ -527,6 +795,8 @@ public class AdminHomeController {
         accountsTableView.setItems(buildAccountData(sqlQry));
         System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
     }
+
+
 
     // Method to ensure valid account number
     private boolean validateAccountNum() {
@@ -1119,6 +1389,13 @@ public class AdminHomeController {
         accountEditPane.setVisible(false);
         singleAccountPane.setVisible(false);
         userPane.setVisible(false);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
+
+
         System.out.println("[INFO] " + new Date().toString() + " Clearing all panes. Showing Event Log Pane");
         logPane.setVisible(true);
     }
@@ -1191,6 +1468,16 @@ public class AdminHomeController {
 
     @FXML
     void onJournClicked() {
+
+        accountsPane.setVisible(false);
+        accountEditPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        userPane.setVisible(false);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
 
     }
 
@@ -1268,6 +1555,12 @@ public class AdminHomeController {
         accountsPane.setVisible(false);
         accountEditPane.setVisible(false);
         singleAccountPane.setVisible(false);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
+
         System.out.println("[INFO] " + new Date().toString() + " Admin load home screen success");
 
     }
@@ -1313,6 +1606,12 @@ public class AdminHomeController {
         accountsPane.setVisible(false);
         singleAccountPane.setVisible(false);
         accountEditPane.setVisible(false);
+
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
+
         userPane.setVisible(true);
     }
 
