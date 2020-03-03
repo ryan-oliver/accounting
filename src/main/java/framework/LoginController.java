@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 import java.sql.Connection;
@@ -199,5 +200,15 @@ public class LoginController {
             alertText.setText("ERROR: Username or password incorrect");
             GlobalUser.clearUser();
         }
+    }
+
+    /**
+     * Help Button
+     */
+
+    @FXML
+    void onHelpBtnPressed(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Loading Help Screen" );
+        SceneSwitch.switchScene("Help.fxml", getClass(), "Login.fxml");
     }
 }

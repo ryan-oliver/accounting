@@ -207,20 +207,282 @@ public class UserHomeController {
     @FXML
     private TextArea newMessageFld;
 
+    @FXML
+    private Rectangle journalBtn;
+
+    @FXML
+    private AnchorPane journalPane;
+
+    // Add journal pane elements here
+
+    @FXML
+    private AnchorPane newJournalPane;
+
+    // Add new journal pane elements here
+
+
+    @FXML
+    void onJournalBtnClicked(MouseEvent event) {
+        deactivateAllPanes();
+        journalPane.setVisible(true);
+    }
+
+    @FXML
+    void onJournalBtnEntered() {
+        journalBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onJournalBtnExited() {
+        journalBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onNewJournEntry(MouseEvent event) {
+        deactivateAllPanes();
+        newJournalPane.setVisible(true);
+    }
+
+    @FXML
+    void onCancelNewJournal(MouseEvent event) {
+        deactivateAllPanes();
+        journalPane.setVisible(true);
+    }
+
+    /**
+     * Called before loading pane. Loads data.
+     */
+    @FXML
+    public void initialize() {
+        userName.setText(GlobalUser.getUserName());
+        System.out.println("[INFO] " + new Date().toString() + " User home page init success");
+        deactivateAllPanes();
+
+        formatAcctTable();
+        formatMesgTable();
+        setDoubleClickOpenAcct();
+        setDoubleClickOpenMessage();
+    }
+
+    /**
+     * Home button methods
+     * @param event
+     */
+
+    @FXML
+    void onHomeBtnEntered(MouseEvent event) {
+        homeBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onHomeBtnExited(MouseEvent event) {
+        homeBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onHomeClicked(MouseEvent event) {
+        deactivateAllPanes();
+    }
+
+    /**
+     * Logout button methods
+     * @param event
+     */
+
+    @FXML
+    void onLogoutBtnEntered(MouseEvent event) {
+        logoutBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onLogoutBtnExited(MouseEvent event) {
+        logoutBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onLogoutClicked(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Logging out user. Global user object cleared. Returning to login screen" );
+        GlobalUser.clearUser();
+        SceneSwitch.switchScene("Login.fxml", getClass());
+    }
+
+    /**\
+     * Accounts view methods
+     * @param event
+     */
+
+    @FXML
+    void onAccountsClicked(MouseEvent event) {
+        deactivateAllPanes();
+        loadAccounts();
+        accountsPane.setVisible(true);
+    }
+
+    @FXML
+    void onAccountsEntered(MouseEvent event) {
+        accountsBtn.setFill(HOV_BUTTON_COLOR);
+    }
+
+    @FXML
+    void onAccountsExited(MouseEvent event) {
+        accountsBtn.setFill(REG_BUTTON_COLOR);
+    }
+
+    // Returns single account view text to default
+    @FXML
+    void onReturnPressed(ActionEvent event) {
+        accNameTxt.setText(UNFILLED_ACCT_NAME);
+        accNumTxt.setText(UNFILLED_ACCT_NUM);
+        accDescTxt.setText(UNFILLED_ACCT_DESC);
+        createdTxt.setText(UNFILLED_CREATED);
+        normalSideTxt.setText(UNFILLED_NORM_SIDE);
+        initBalTxt.setText(UNFILLED_INIT_BAL);
+        balTxt.setText(UNFILLED_BAL);
+        statementTxt.setText(UNFILLED_STATEMENT);
+        activeTxt.setText(UNFILLED_ACTIVE);
+        categoryTxt.setText(UNFILLED_CAT);
+        subcatTxt.setText(UNFILLED_SUBCAT);
+
+        Account.clearAccount();
+
+        singleAccountPane.setVisible(false);
+        accountsPane.setVisible(true);
+    }
+
+    @FXML
+    void onSearchClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void onSearchEntered(MouseEvent event) {
+        searchBtn.setFill(HOV_SEARCH_COLOR);
+    }
+
+    @FXML
+    void onSearchExited(MouseEvent event) {
+        searchBtn.setFill(REG_SEARCH_COLOR);
+    }
+
+    // Used to set up account table mapping
+    private void formatAcctTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting account table design");
+        accountNumberCol.setCellValueFactory(new MapValueFactory("accountNum"));
+        accountNameCol.setCellValueFactory(new MapValueFactory("accountName"));
+        accountTypeCol.setCellValueFactory(new MapValueFactory("category"));
+        statementCol.setCellValueFactory(new MapValueFactory("statement"));
+    }
+
+    // Used to load accounts to table
+    private void loadAccounts() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all accounts to table");
+        String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts";
+        accountsTableView.setItems(buildAccountData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
+    }
+
+    // Used to build data for accounts table
+    private ObservableList<Map> buildAccountData(String query) {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building table data from sql query");
+            ObservableList<Map> accountList = FXCollections.observableArrayList();
+            PreparedStatement getAccounts = conn.prepareStatement(query);
+            ResultSet rs = getAccounts.executeQuery();
+            while (rs.next()) {
+                Map<String, String> account = new HashMap<>();
+                account.put("accountNum", String.valueOf(rs.getString("accountNum")));
+                account.put("accountName", String.valueOf(rs.getString("accountName")));
+                account.put("category", String.valueOf(rs.getString("category")));
+                account.put("statement", String.valueOf(rs.getString("statement")));
+                accountList.add(account);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildAccountData()");
+            return accountList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    // Sets account table mouse action
+    private void setDoubleClickOpenAcct() {
+        accountsTableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String accountNum = (String) accountsTableView.getSelectionModel().getSelectedItem().get("accountNum");
+                loadThisAccount(accountNum);
+            }
+        });
+    }
+
+    // Helper for table mouse action. Sets single account view text information.
+    private void loadThisAccount(String accNum) {
+
+        Account.setAccount(accNum);
+
+        accNameTxt.setText(UNFILLED_ACCT_NAME + Account.getAccountName());
+        accNumTxt.setText(UNFILLED_ACCT_NUM + Account.getAccountNumber());
+        accDescTxt.setText(UNFILLED_ACCT_DESC + Account.getAccountDescription());
+        createdTxt.setText(UNFILLED_CREATED + Account.getCreated());
+        normalSideTxt.setText(UNFILLED_NORM_SIDE + Account.getNormalSide());
+        initBalTxt.setText(UNFILLED_INIT_BAL + Account.getInitialBalance());
+        balTxt.setText(UNFILLED_BAL + Account.getBalance());
+        statementTxt.setText(UNFILLED_STATEMENT + Account.getStatement());
+        activeTxt.setText(UNFILLED_ACTIVE + Account.getActive());
+        categoryTxt.setText(UNFILLED_CAT + Account.getCategory());
+        subcatTxt.setText(UNFILLED_SUBCAT + Account.getSubcategory());
+
+        accountsPane.setVisible(false);
+        singleAccountPane.setVisible(true);
+    }
+
+    /**
+     * Various Methods
+      */
+
+    // Set all panes to invisible
+    private void deactivateAllPanes() {
+        accountsPane.setVisible(false);
+        singleAccountPane.setVisible(false);
+        mailPane.setVisible(false);
+        mailTablePane.setVisible(false);
+        openMessagePane.setVisible(false);
+        newMessagePane.setVisible(false);
+        journalPane.setVisible(false);
+        newJournalPane.setVisible(false);
+    }
+
+
+    /**
+     * Help Button
+     */
+
+    @FXML
+    void onHelpBtnPressed(MouseEvent event) {
+        System.out.println("[INFO] " + new Date().toString() + " Loading Help Screen" );
+        SceneSwitch.switchScene("Help.fxml", getClass(), "User Home.fxml");
+    }
+
     /**
      * Mail methods
      */
 
     @FXML
     void onMailBtnPressed(MouseEvent event) {
-        accountsPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-
-
+        deactivateAllPanes();
+        loadMessages();
         mailPane.setVisible(true);
         mailTablePane.setVisible(true);
-        newMessagePane.setVisible(false);
-        openMessagePane.setVisible(false);
+
 
         // Method to build table data
     }
@@ -383,208 +645,5 @@ public class UserHomeController {
         Message.clearMessage();
         loadMessages();
     }
-
-
-
-    /**
-     * Called before loading pane. Loads data.
-     */
-    @FXML
-    public void initialize() {
-        userName.setText(GlobalUser.getUserName());
-        System.out.println("[INFO] " + new Date().toString() + " User home page init success");
-        accountsPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-        mailPane.setVisible(false);
-        openMessagePane.setVisible(false);
-        mailTablePane.setVisible(false);
-        newMessagePane.setVisible(false);
-
-        formatAcctTable();
-        loadAccounts();
-        setDoubleClickOpenAcct();
-    }
-
-    /**
-     * Home button methods
-     * @param event
-     */
-
-    @FXML
-    void onHomeBtnEntered(MouseEvent event) {
-        homeBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onHomeBtnExited(MouseEvent event) {
-        homeBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onHomeClicked(MouseEvent event) {
-        accountsPane.setVisible(false);
-        singleAccountPane.setVisible(false);
-    }
-
-    /**
-     * Logout button methods
-     * @param event
-     */
-
-    @FXML
-    void onLogoutBtnEntered(MouseEvent event) {
-        logoutBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onLogoutBtnExited(MouseEvent event) {
-        logoutBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onLogoutClicked(MouseEvent event) {
-        System.out.println("[INFO] " + new Date().toString() + " Logging out user. Global user object cleared. Returning to login screen" );
-        GlobalUser.clearUser();
-        SceneSwitch.switchScene("Login.fxml", getClass());
-    }
-
-    /**\
-     * Accounts view methods
-     * @param event
-     */
-
-    @FXML
-    void onAccountsClicked(MouseEvent event) {
-        singleAccountPane.setVisible(false);
-        accountsPane.setVisible(true);
-    }
-
-    @FXML
-    void onAccountsEntered(MouseEvent event) {
-        accountsBtn.setFill(HOV_BUTTON_COLOR);
-    }
-
-    @FXML
-    void onAccountsExited(MouseEvent event) {
-        accountsBtn.setFill(REG_BUTTON_COLOR);
-    }
-
-    // Returns single account view text to default
-    @FXML
-    void onReturnPressed(ActionEvent event) {
-        accNameTxt.setText(UNFILLED_ACCT_NAME);
-        accNumTxt.setText(UNFILLED_ACCT_NUM);
-        accDescTxt.setText(UNFILLED_ACCT_DESC);
-        createdTxt.setText(UNFILLED_CREATED);
-        normalSideTxt.setText(UNFILLED_NORM_SIDE);
-        initBalTxt.setText(UNFILLED_INIT_BAL);
-        balTxt.setText(UNFILLED_BAL);
-        statementTxt.setText(UNFILLED_STATEMENT);
-        activeTxt.setText(UNFILLED_ACTIVE);
-        categoryTxt.setText(UNFILLED_CAT);
-        subcatTxt.setText(UNFILLED_SUBCAT);
-
-        Account.clearAccount();
-
-        singleAccountPane.setVisible(false);
-        accountsPane.setVisible(true);
-    }
-
-    @FXML
-    void onSearchClicked(MouseEvent event) {
-
-    }
-
-    @FXML
-    void onSearchEntered(MouseEvent event) {
-        searchBtn.setFill(HOV_SEARCH_COLOR);
-    }
-
-    @FXML
-    void onSearchExited(MouseEvent event) {
-        searchBtn.setFill(REG_SEARCH_COLOR);
-    }
-
-    // Used to set up account table mapping
-    private void formatAcctTable() {
-        System.out.println("[INFO] " + new Date().toString() + " Formatting account table design");
-        accountNumberCol.setCellValueFactory(new MapValueFactory("accountNum"));
-        accountNameCol.setCellValueFactory(new MapValueFactory("accountName"));
-        accountTypeCol.setCellValueFactory(new MapValueFactory("category"));
-        statementCol.setCellValueFactory(new MapValueFactory("statement"));
-    }
-
-    // Used to load accounts to table
-    private void loadAccounts() {
-        System.out.println("[INFO] " + new Date().toString() + " Loading all accounts to table");
-        String sqlQry = "SELECT accountNum, accountName, category, statement FROM app_domain.accounts";
-        accountsTableView.setItems(buildAccountData(sqlQry));
-        System.out.println("[INFO] " + new Date().toString() + " Accounts load to table success");
-    }
-
-    // Used to build data for accounts table
-    private ObservableList<Map> buildAccountData(String query) {
-        try {
-            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
-            Connection conn = DriverManager.getConnection(url, "root", "password");
-            if (conn != null) {
-                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildAccountData()");
-            }
-
-            System.out.println("[INFO] " + new Date().toString() + " Building table data from sql query");
-            ObservableList<Map> accountList = FXCollections.observableArrayList();
-            PreparedStatement getAccounts = conn.prepareStatement(query);
-            ResultSet rs = getAccounts.executeQuery();
-            while (rs.next()) {
-                Map<String, String> account = new HashMap<>();
-                account.put("accountNum", String.valueOf(rs.getString("accountNum")));
-                account.put("accountName", String.valueOf(rs.getString("accountName")));
-                account.put("category", String.valueOf(rs.getString("category")));
-                account.put("statement", String.valueOf(rs.getString("statement")));
-                accountList.add(account);
-            }
-            conn.close();
-            System.out.println("[INFO] " + new Date().toString() + " Returning table data");
-            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildAccountData()");
-            return accountList;
-        }
-        catch(Exception ex) {
-            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    // Sets account table mouse action
-    private void setDoubleClickOpenAcct() {
-        accountsTableView.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                String accountNum = (String) accountsTableView.getSelectionModel().getSelectedItem().get("accountNum");
-                loadThisAccount(accountNum);
-            }
-        });
-    }
-
-    // Helper for table mouse action. Sets single account view text information.
-    private void loadThisAccount(String accNum) {
-
-        Account.setAccount(accNum);
-
-        accNameTxt.setText(UNFILLED_ACCT_NAME + Account.getAccountName());
-        accNumTxt.setText(UNFILLED_ACCT_NUM + Account.getAccountNumber());
-        accDescTxt.setText(UNFILLED_ACCT_DESC + Account.getAccountDescription());
-        createdTxt.setText(UNFILLED_CREATED + Account.getCreated());
-        normalSideTxt.setText(UNFILLED_NORM_SIDE + Account.getNormalSide());
-        initBalTxt.setText(UNFILLED_INIT_BAL + Account.getInitialBalance());
-        balTxt.setText(UNFILLED_BAL + Account.getBalance());
-        statementTxt.setText(UNFILLED_STATEMENT + Account.getStatement());
-        activeTxt.setText(UNFILLED_ACTIVE + Account.getActive());
-        categoryTxt.setText(UNFILLED_CAT + Account.getCategory());
-        subcatTxt.setText(UNFILLED_SUBCAT + Account.getSubcategory());
-
-        accountsPane.setVisible(false);
-        singleAccountPane.setVisible(true);
-    }
-
 }
 

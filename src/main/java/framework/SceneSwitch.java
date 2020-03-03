@@ -15,6 +15,8 @@ public class SceneSwitch {
      * @param c Class of calling class - Use: getClass()
      */
 
+    static String callingPage;
+
     public static void switchScene(String loc, Class c) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(c.getResource(loc));
@@ -26,4 +28,30 @@ public class SceneSwitch {
             System.err.println(ex.getMessage());
         }
     }
+
+    public static void switchScene(String loc, Class c, String page) {
+        callingPage = page;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(c.getResource(loc));
+            Parent logIn = (Parent) fxmlLoader.load();
+            Main.getPrimaryStage().setScene(new Scene(logIn));
+            Main.getPrimaryStage().show();
+        }
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    public static void switchBack(Class c) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(c.getResource(callingPage));
+            Parent logIn = (Parent) fxmlLoader.load();
+            Main.getPrimaryStage().setScene(new Scene(logIn));
+            Main.getPrimaryStage().show();
+        }
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
 }
