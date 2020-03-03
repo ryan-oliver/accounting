@@ -18,6 +18,12 @@
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1200.0" />
+            <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Accounting Express" wrappingWidth="441.22900390625">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <Line endX="981.0" layoutX="219.0" layoutY="75.0" startX="-219.0" stroke="#9f7c3f" strokeWidth="5.0" />
             <TextField fx:id="userName" layoutX="642.0" layoutY="25.0" promptText=" User Name">
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -26,7 +32,7 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></PasswordField>
-            <Button layoutX="1100.0" layoutY="40.0" mnemonicParsing="false" onAction="#onForgotPassword" text="Forgot Password">
+            <Button layoutX="1100.0" layoutY="27.0" mnemonicParsing="false" onAction="#onForgotPassword" text="Forgot Password">
                <font>
                   <Font size="9.0" />
                </font>
@@ -37,7 +43,7 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="1100.0" layoutY="20.0" mnemonicParsing="false" onAction="#signUpWin" prefHeight="5.0" prefWidth="47.0" text="Sign Up">
+            <Button layoutX="1100.0" layoutY="7.0" mnemonicParsing="false" onAction="#signUpWin" prefHeight="5.0" prefWidth="47.0" text="Sign Up">
                <font>
                   <Font size="9.0" />
                </font>
@@ -45,17 +51,19 @@
                   <Tooltip text="Press to sign up for an account" />
                </tooltip>
             </Button>
-            <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Accounting Express" wrappingWidth="441.22900390625">
-               <font>
-                  <Font size="30.0" />
-               </font>
-            </Text>
-            <Line endX="981.0" layoutX="219.0" layoutY="75.0" startX="-219.0" stroke="#9f7c3f" strokeWidth="5.0" />
             <Text fx:id="alertText" fill="#ff0606" layoutX="652.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="308.6376953125">
                <font>
                   <Font size="10.0" />
                </font>
             </Text>
+            <Button layoutX="1100.0" layoutY="48.0" mnemonicParsing="false" onMouseClicked="#onHelpBtnPressed" text="Help">
+               <font>
+                  <Font size="9.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="Press to reset password" />
+               </tooltip>
+            </Button>
          </children>
       </AnchorPane>
    </children>

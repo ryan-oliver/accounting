@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="framework.HelpController">
+   <children>
+      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1200.0" />
+            <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Accounting Express" wrappingWidth="441.22900390625">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <Line endX="981.0" layoutX="219.0" layoutY="75.0" startX="-219.0" stroke="#9f7c3f" strokeWidth="5.0" />
+            <Button layoutX="45.0" layoutY="141.0" mnemonicParsing="false" onMouseClicked="#onUserClicked" text="Users" />
+            <Button layoutX="45.0" layoutY="341.0" mnemonicParsing="false" onMouseClicked="#onMessagingClicked" text="Messaging" />
+            <Button layoutX="45.0" layoutY="242.0" mnemonicParsing="false" onMouseClicked="#onJournalsClicked" text="Journals" />
+            <Button layoutX="45.0" layoutY="191.0" mnemonicParsing="false" onMouseClicked="#onAccountsClicked" text="Accounts" />
+            <Button layoutX="45.0" layoutY="291.0" mnemonicParsing="false" onMouseClicked="#onEventLogClicked" text="Event Log" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="645.0" layoutX="158.0" layoutY="127.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="980.0" />
+            <Text fx:id="titleTxt" layoutX="177.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.6108856201172">
+               <font>
+                  <Font size="42.0" />
+               </font>
+            </Text>
+            <Line endX="657.6712646484375" endY="-21.570510864257812" layoutX="452.0" layoutY="218.0" startX="-273.3839111328125" startY="-21.570510864257812" />
+            <Text fx:id="contentText" layoutX="180.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="919.0" />
+            <Button layoutX="45.0" layoutY="719.0" mnemonicParsing="false" onMouseClicked="#onReturnPressed" text="Return" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

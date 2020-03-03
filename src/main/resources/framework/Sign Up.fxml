@@ -16,7 +16,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="framework.SignUpController">
    <children>
-      <AnchorPane prefHeight="806.0" prefWidth="1208.0" style="-fx-background-color: #615f5a#615f5a;">
+      <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a#615f5a;">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#eeeeee" height="600.0" layoutX="456.0" layoutY="102.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="313.0" />
             <TextField fx:id="fName" layoutX="530.0" layoutY="210.0" promptText="First Name">
@@ -104,5 +104,12 @@
             <Line endX="100.0" layoutX="613.0" layoutY="177.0" startX="-100.0" strokeWidth="0.5" />
          </children>
       </AnchorPane>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1200.0" />
+      <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Accounting Express" wrappingWidth="441.22900390625">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Line endX="969.0" endY="-8.799354553222656" layoutX="229.0" layoutY="85.0" startX="-229.0" startY="-8.799354553222656" stroke="#9f7c3f" strokeWidth="5.0" />
    </children>
 </AnchorPane>
