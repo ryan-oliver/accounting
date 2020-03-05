@@ -24,7 +24,7 @@
             <Button layoutX="45.0" layoutY="191.0" mnemonicParsing="false" onMouseClicked="#onAccountsClicked" text="Accounts" />
             <Button layoutX="45.0" layoutY="291.0" mnemonicParsing="false" onMouseClicked="#onEventLogClicked" text="Event Log" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="645.0" layoutX="158.0" layoutY="127.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="980.0" />
-            <Text fx:id="titleTxt" layoutX="177.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="140.6108856201172">
+            <Text fx:id="titleTxt" layoutX="177.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="253.67762756347656" AnchorPane.bottomAnchor="608.0">
                <font>
                   <Font size="42.0" />
                </font>
