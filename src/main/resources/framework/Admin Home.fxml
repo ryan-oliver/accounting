@@ -365,7 +365,7 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="journalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+      <AnchorPane fx:id="journalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="675.0" layoutY="100.0" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="100.0" />
             <TableView editable="true" layoutX="66.0" layoutY="140.0" maxHeight="627.0" prefHeight="627.0" prefWidth="778.0" stylesheets="file:stylesheets/admin_user-table.css">
@@ -402,7 +402,7 @@
             <Button layoutX="858.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#onNewJournEntry" text="New Entry" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
          <children>
             <TableView editable="true" layoutX="93.0" layoutY="85.0" maxHeight="627.0" prefHeight="627.0" prefWidth="773.0" stylesheets="file:stylesheets/admin_user-table.css">
                <columns>
@@ -414,8 +414,8 @@
             </TableView>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="47.0" layoutX="94.0" layoutY="718.0" stroke="BLACK" strokeType="INSIDE" width="642.0" />
             <Text layoutX="209.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remove this and add text fileds for input here" />
-            <Button layoutX="813.0" layoutY="725.0" mnemonicParsing="false" text="Add" />
-            <Button layoutX="895.0" layoutY="92.0" mnemonicParsing="false" text="Submit" />
+            <Button layoutX="813.0" layoutY="725.0" mnemonicParsing="false" onMouseClicked="#onJournAddClicked" text="Add" />
+            <Button layoutX="895.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onJournSubmitClicked" text="Submit" />
             <Button layoutX="16.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onCancelNewJournal" text="Cancel" />
          </children>
       </AnchorPane>

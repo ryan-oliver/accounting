@@ -31,10 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Thread.sleep;
-
-// todo - logo on all pages
-
 public class AdminHomeController {
 
     private final Color REG_BUTTON_COLOR = Color.web("#a4a6a8");
@@ -724,7 +720,7 @@ public class AdminHomeController {
 
         if (Account.getBalance().equals("0")) {
             deacAlertText.setText("");
-            // todo - set account active to 0.
+            // todo (R1) - set account active to 0.
 
             // Adding event to event log
             String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " deactivated an account. Account Name: " + Account.getAccountName() + ". Account Number: "
@@ -1140,6 +1136,8 @@ public class AdminHomeController {
      * Journal Methods
      */
 
+    // todo (R2) - Begin journal area. This serves as a bookmark
+
     @FXML
     void onJournClicked() {
         deactivateAllPanes();
@@ -1160,6 +1158,11 @@ public class AdminHomeController {
     void onNewJournEntry(MouseEvent event) {
         deactivateAllPanes();
         newJournalPane.setVisible(true);
+        // todo (R2) - Step 1 after adding fields to scenebuilder pane
+        // todo (R2) - create a method (and add it here) to SQL search for the account names
+            // todo (R2) - add the discovered strings as options in the accounts combobox.
+        //          Do it here because it'll update the account options every time the new journal button is pressed.
+            // todo (R2) - ref lines 414, 267, (921 <- where a combo box is dynamically set)
     }
 
     @FXML
@@ -1167,6 +1170,31 @@ public class AdminHomeController {
         deactivateAllPanes();
         journalPane.setVisible(true);
     }
+
+    @FXML
+    void onJournAddClicked(MouseEvent event) {
+        // todo (R2) - Step 2
+        // todo (R2) - validate data that was entered. (ref 801)
+        // todo (R2) - after validate add as new JournalEntry obj
+        // todo (R2) - call loadNewJournalTable() ref lines 450 & 503 (where account table is updated)
+            //  Correctly implemented this should show the entries in the table as they are added to the journal.
+    }
+
+    private void loadNewJournalTable() {
+        // load values to the table following logic from loadAccounts method
+    }
+
+    @FXML
+    void onJournSubmitClicked(MouseEvent event) {
+        // todo (R2) - check that all credits and debits balance, and that all fields are filled for the Journal
+        //  e.g. Journal name, and description. I suggest a loop that goes through the
+        //  arrayList of entries that would add either the credit or debit to a local variable in this method of the same name.
+        //  If not match then Show Error (use if else logic similar to log in - ref LogInController line 120).
+        //  todo (R2) - If match, then print the Values to console to test.
+        //  Let Ryan know ready so I can set db actions and then inform team
+    }
+
+    // End journal methods
 
     /**
      * Account search methods

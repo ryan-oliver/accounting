@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-// todo - add search from admin
 
 /**
  * This class controls the user page after login. Currently used for manager and for accountant.
