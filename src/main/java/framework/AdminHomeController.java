@@ -412,7 +412,6 @@ public class AdminHomeController {
         formatAcctTable();
         formatLogTable();
         formatMesgTable();
-
         setShowExpPassActions();
         setAccTypeCmbBxOptions();
         setUserTableFieldsEditable();
@@ -772,7 +771,8 @@ public class AdminHomeController {
 
                 confirmationTxt.setText("Update successful! Returning to account page");
 
-                sleep(3000);
+
+                // Adding event log
 
                 String message = LocalDateTime.now() + " : " + GlobalUser.getUserName() + " updated an account. Account Number: "
                         + Account.getAccountNumber() + ". New Values: Account Name: " + newAccountNameFld.getText() + ". Account Description: "+ newAccountDescFld.getText() +
