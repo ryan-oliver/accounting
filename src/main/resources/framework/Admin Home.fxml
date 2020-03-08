@@ -412,11 +412,14 @@
                   <TableColumn prefWidth="99.0" text="Category4" />
                </columns>
             </TableView>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="47.0" layoutX="94.0" layoutY="718.0" stroke="BLACK" strokeType="INSIDE" width="642.0" />
-            <Text layoutX="209.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remove this and add text fileds for input here" />
             <Button layoutX="813.0" layoutY="725.0" mnemonicParsing="false" onMouseClicked="#onJournAddClicked" text="Add" />
             <Button layoutX="895.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onJournSubmitClicked" text="Submit" />
             <Button layoutX="16.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onCancelNewJournal" text="Cancel" />
+            <DatePicker fx:id="DatefldNJE" layoutX="420.0" layoutY="752.0" promptText="Date" />
+            <TextField fx:id="debitamtNJE" layoutX="264.0" layoutY="721.0" maxWidth="160.0" promptText="Debit Amount" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <TextField fx:id="creditamtNJE" layoutX="104.0" layoutY="721.0" maxWidth="160.0" promptText="Credit Amount" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <TextField fx:id="memofldNJE" layoutX="104.0" layoutY="752.0" maxWidth="309.0" prefHeight="25.0" prefWidth="309.0" promptText="Journal Memo" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;" />
+            <ComboBox fx:id="accountssubcategoryNJE" layoutX="592.0" layoutY="721.0" prefWidth="160.0" promptText="Subcategory" />
          </children>
       </AnchorPane>
       <Rectangle fx:id="mailBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="230.0" layoutY="17.0" onMouseClicked="#onMailBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
@@ -426,5 +429,6 @@
          </image>
       </ImageView>
       <Rectangle fx:id="helpBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="290.0" layoutY="17.0" onMouseClicked="#onHelpBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
+      <ComboBox fx:id="categoryNJE" layoutX="625.0" layoutY="721.0" onHiding="#onCategoryHiding" prefWidth="160.0" promptText="Category" />
    </children>
 </AnchorPane>
