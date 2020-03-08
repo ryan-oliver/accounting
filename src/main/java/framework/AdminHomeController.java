@@ -22,14 +22,13 @@ import javafx.scene.text.Text;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AdminHomeController {
 
@@ -389,6 +388,35 @@ public class AdminHomeController {
     private AnchorPane newJournalPane;
 
     // Add new journal pane elements here
+
+    @FXML
+    private ComboBox<String> accountComboBox;
+
+
+    void loadAccountNamesForJournalCmbBx() {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+            }
+            String sqlQry = "SELECT accountName FROM app_domain.accounts";
+            PreparedStatement getAccounts = conn.prepareStatement(sqlQry);
+            ResultSet rs = getAccounts.executeQuery();
+            ArrayList<String> names = new ArrayList<>();
+            while (rs.next()) {
+                names.add(rs.getString(1));
+            }
+            conn.close();
+            ObservableList<String> accTypes = FXCollections.observableArrayList(names);
+            accountComboBox.setItems(accTypes);
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.loadAccountNamesForJournalCmbBx()");
+            ex.printStackTrace();
+        }
+    }
+
+
 
 
     /**
@@ -1158,6 +1186,7 @@ public class AdminHomeController {
     void onNewJournEntry(MouseEvent event) {
         deactivateAllPanes();
         newJournalPane.setVisible(true);
+        loadAccountNamesForJournalCmbBx();
         // todo (R2) - Step 1 after adding fields to scenebuilder pane
         // todo (R2) - create a method (and add it here) to SQL search for the account names
             // todo (R2) - add the discovered strings as options in the accounts combobox.
