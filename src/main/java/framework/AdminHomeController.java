@@ -60,6 +60,24 @@ public class AdminHomeController {
     private ImageView profilePicture;
 
     @FXML
+    private ComboBox categoryNJE;
+
+    @FXML
+    private ComboBox accountssubcategoryNJE;
+
+    @FXML
+    private TextField creditamtNJE;
+
+    @FXML
+    private TextField debitamtNJE;
+
+    @FXML
+    private TextField memofldNJE;
+
+    @FXML
+    private DatePicker DatefldNJE;
+
+    @FXML
     private Text userName;
 
     @FXML
@@ -1178,6 +1196,22 @@ public class AdminHomeController {
         // todo (R2) - after validate add as new JournalEntry obj
         // todo (R2) - call loadNewJournalTable() ref lines 450 & 503 (where account table is updated)
             //  Correctly implemented this should show the entries in the table as they are added to the journal.
+        if(creditamtNJE != null && debitamtNJE != null && categoryNJE != null && accountssubcategoryNJE != null && DatefldNJE != null)
+        {
+            if(memofldNJE != null) {
+                JournalEntry NJE = new JournalEntry(creditamtNJE.toString(), debitamtNJE.toString(), memofldNJE.toString(), DatefldNJE.getValue(), categoryNJE, accountssubcategoryNJE);
+                loadNewJournalTable();
+            }
+//            else
+//            {
+//                JournalEntry NJE = new JournalEntry(creditamtNJE.toString(), debitamtNJE.toString(), DatefldNJE.getValue(), categoryNJE, accountssubcategoryNJE);
+//                loadNewJournalTable();
+//            }
+        }
+        else
+        {
+            alertText.setText("ERROR: Not all fields have valid entries.");
+        }
     }
 
     private void loadNewJournalTable() {

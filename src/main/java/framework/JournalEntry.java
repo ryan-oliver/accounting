@@ -30,7 +30,7 @@ public class JournalEntry {
         // Testing method
 
         Journal j = new Journal();
-        JournalEntry je = new JournalEntry("100", "0", "TEst", new Date(), 5, 3);
+        JournalEntry je = new JournalEntry("100", "0", "Test", new Date(), 5, 3);
         System.out.println(Journal.getListLength());
     }
 }
