@@ -26,10 +26,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AdminHomeController {
 
@@ -55,6 +53,12 @@ public class AdminHomeController {
     private final String UNFILLED_SUBJ = "Subject: ";
     private final String UNFILLED_DATE = "Date: ";
     private final String UNFILLED_MSG = "";
+
+    private final String UNFILLLED_JOURN_NAME = "Name: ";
+    private final String UNFILLLED_JOURN_DATE = "Date: ";
+    private final String UNFILLLED_JOURN_DESCRIP = "Description: ";
+    private final String UNFILLLED_JOURN_APPROV = "Approval: ";
+    private final String UNFILLLED_JOURN_STATUS = "Status: ";
 
     @FXML
     private ImageView profilePicture;
@@ -390,6 +394,143 @@ public class AdminHomeController {
 
     // Add new journal pane elements here
 
+    @FXML
+    private TextField journNameFld;
+
+    @FXML
+    private TextField journDescFld;
+
+    @FXML
+    private TextField journEntCreditFld;
+
+    @FXML
+    private TextField journEntDebitFld;
+
+    @FXML
+    private TextField journEntMemoFld;
+
+    @FXML
+    private DatePicker journEntDate;
+
+    @FXML
+    private TableView newJournTable;
+
+    @FXML
+    private TableColumn newJournAccountCol;
+
+    @FXML
+    private TableColumn newJournCreditCol;
+
+    @FXML
+    private TableColumn newJournDebitCol;
+
+    @FXML
+    private TableColumn newJournDateCol;
+
+    @FXML
+    private TableColumn newJournMemoCol;
+
+    @FXML
+    private Text newJournErrorTxt;
+
+    @FXML
+    private ComboBox<String> accountComboBox;
+
+    @FXML
+    private Button declineBtn;
+
+    @FXML
+    private Button approveBtn;
+
+    @FXML
+    private AnchorPane declineJournPane;
+
+    @FXML
+    private TextArea reasonFld;
+
+    @FXML
+    private TableView<Map> allJournalsTableView;
+
+    @FXML
+    private TableColumn allJournNameCol;
+
+    @FXML
+    private TableColumn allJournDateCol;
+
+    @FXML
+    private TableColumn allJournDescriptionCol;
+
+    @FXML
+    private TableColumn allJournStatusCol;
+
+    @FXML
+    private TableColumn allJournPendingCol;
+
+    @FXML
+    private TextField journSearchFld;
+
+    @FXML
+    private CheckBox approvedChkBx;
+
+    @FXML
+    private CheckBox pendingChkBx;
+
+    @FXML
+    private AnchorPane singleJournPane;
+
+    @FXML
+    private TableView<Map> singleJournTable;
+
+    @FXML
+    private TableColumn singleJournAccountCol;
+
+    @FXML
+    private TableColumn singleJournCreditCol;
+
+    @FXML
+    private TableColumn singleJournDebitCol;
+
+    @FXML
+    private TableColumn singleJournDateCol;
+
+    @FXML
+    private TableColumn singleJournMemoCol;
+
+    @FXML
+    private Text journNameTxt;
+
+    @FXML
+    private Text journDescTxt;
+
+    @FXML
+    private Text journDateTxt;
+
+    @FXML
+    private Text journApprovalTxt;
+
+    @FXML
+    private Text journStatusTxt;
+
+    @FXML
+    private TableView<Map> ledgerTableView;
+
+    @FXML
+    private TableColumn ledgerDateCol;
+
+    @FXML
+    private TableColumn ledgerDescCol;
+
+    @FXML
+    private TableColumn jIDLedgerCol;
+
+    @FXML
+    private TableColumn ledgerDebitCol;
+
+    @FXML
+    private TableColumn ledgerCreditCol;
+
+    @FXML
+    private TableColumn ledgerBalCol;
 
     /**
      * Initialize method is called before primary screen is loaded. Place setup methods here.
@@ -408,7 +549,14 @@ public class AdminHomeController {
         formatAcctTable();
         formatLogTable();
         formatMesgTable();
+        formatJournalTable();
+        formatJournalEntryTable();
+        formatSingleJournalTable();
+        formatLedgerTable();
+
         setShowExpPassActions();
+        setShowApprovedJourns();
+        setShowPendingJourns();
         setAccTypeCmbBxOptions();
         setUserTableFieldsEditable();
         setCategoryCmbBx();
@@ -416,6 +564,8 @@ public class AdminHomeController {
         setNormalSideCmbBx();
         setDoubleClickOpenAcct();
         setDoubleClickOpenMessage();
+        setDoubleClickOpenJournal();
+        setDoubleClickOpenJournalFromLedger();
 
         System.out.println("[INFO] " + new Date().toString() + " Admin home page init success");
     }
@@ -560,6 +710,17 @@ public class AdminHomeController {
         });
     }
 
+    private void setDoubleClickOpenJournalFromLedger() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting journal table mouse actions");
+        ledgerTableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String journalid = (String) ledgerTableView.getSelectionModel().getSelectedItem().get("journal_id");
+                loadThisJournal(journalid);
+            }
+
+        });
+    }
+
     // Method to set global account
     private void loadThisAccount(String accNum) {
 
@@ -579,9 +740,86 @@ public class AdminHomeController {
         categoryTxt.setText(UNFILLED_CAT + Account.getCategory());
         subcatTxt.setText(UNFILLED_SUBCAT + Account.getSubcategory());
 
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.loadThisAccount()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Getting account id from sql query");
+            PreparedStatement getAccounts = conn.prepareStatement("select idaccounts from accounts where accountNum = (?)");
+            getAccounts.setString(1, accNum);
+            ResultSet rs = getAccounts.executeQuery();
+            int accId = -1;
+            while (rs.next()) {
+                accId = rs.getInt(1);
+            }
+            loadLedger(accId);
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning account table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildAccountData()");
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
+            ex.printStackTrace();
+        }
         accountsPane.setVisible(false);
         userPane.setVisible(false);
         singleAccountPane.setVisible(true);
+    }
+
+    private void loadLedger(int accId) {
+        System.out.println("[INFO] " + new Date().toString() + " Loading ledger to table");
+        String sqlQry = "SELECT * FROM ledger where account_id = " + accId;
+        ledgerTableView.setItems(buildLedgerData(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Ledger load to table success");
+    }
+
+    // This method builds the data for the account table view. It is assembling a Map to hold the values.
+    private ObservableList<Map> buildLedgerData(String query) {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.loadLedger()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building ledger table data from sql query");
+            ObservableList<Map> ledgerList = FXCollections.observableArrayList();
+            PreparedStatement getLedger = conn.prepareStatement(query);
+            ResultSet rs = getLedger.executeQuery();
+            while (rs.next()) {
+                Map<String, String> ledger = new HashMap<>();
+                ledger.put("date", String.valueOf(rs.getDate("date")));
+                ledger.put("description", rs.getString("description"));
+                ledger.put("debit", rs.getString("debit"));
+                ledger.put("credit", rs.getString("credit"));
+                ledger.put("balance", rs.getString("balance"));
+                ledger.put("journal_id", rs.getString("journal_id"));
+                ledgerList.add(ledger);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning ledger table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.loadLedger()");
+            return ledgerList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.loadLedger()");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+
+    void formatLedgerTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting ledger table design");
+        ledgerDateCol.setCellValueFactory(new MapValueFactory("date"));
+        ledgerBalCol.setCellValueFactory(new MapValueFactory("balance"));
+        ledgerDescCol.setCellValueFactory(new MapValueFactory("description"));
+        jIDLedgerCol.setCellValueFactory(new MapValueFactory("journal_id"));
+        ledgerDebitCol.setCellValueFactory(new MapValueFactory("debit"));
+        ledgerCreditCol.setCellValueFactory(new MapValueFactory("credit"));
     }
 
     // Method to return to all accounts page
@@ -913,6 +1151,10 @@ public class AdminHomeController {
 
         journalPane.setVisible(false);
         newJournalPane.setVisible(false);
+
+        declineJournPane.setVisible(false);
+
+        singleJournPane.setVisible(false);
     }
 
     // This method updates subcategory options for the subcategory combo box on the NEW accounts page. It is based on
@@ -1138,10 +1380,153 @@ public class AdminHomeController {
 
     // todo (R2) - Begin journal area. This serves as a bookmark
 
+    // search
+
+    // chkbx's
+
     @FXML
     void onJournClicked() {
         deactivateAllPanes();
+        loadJournalTable();
         journalPane.setVisible(true);
+    }
+
+    void formatJournalTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Formatting journal table design");
+        allJournNameCol.setCellValueFactory(new MapValueFactory("name"));
+        allJournDateCol.setCellValueFactory(new MapValueFactory("date"));
+        allJournDescriptionCol.setCellValueFactory(new MapValueFactory("description"));
+        allJournStatusCol.setCellValueFactory(new MapValueFactory("approved"));
+        allJournPendingCol.setCellValueFactory(new MapValueFactory("status"));
+    }
+
+    @FXML
+    void journSearchBtnClicked(MouseEvent event) {
+        if (journSearchFld.getText() != null) {
+            if (journSearchFld.getText().equals("")) {
+                loadJournalTable();
+            }
+            else {
+                String searchString = "\"" + journSearchFld.getText() + "\"";
+
+                System.out.println("[INFO] " + new Date().toString() + " Loading journal search to table");
+                String sqlQry = "SELECT * FROM journal where name = " + searchString;
+                allJournalsTableView.setItems(buildJournalTable(sqlQry));
+                System.out.println("[INFO] " + new Date().toString() + " Journal load to table success");
+            }
+        }
+        else {
+            loadJournalTable();
+        }
+    }
+
+    private void loadJournalTable() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all journals to table");
+        String sqlQry = "SELECT * FROM journal";
+        allJournalsTableView.setItems(buildJournalTable(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Journals load to table success");
+    }
+
+    private void  loadJournalTableAppr() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all journals to table");
+        String sqlQry = "SELECT * FROM journal where approved = 1";
+        allJournalsTableView.setItems(buildJournalTable(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Journals load to table success");
+    }
+
+    private void loadJournalTablePend() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all journals to table");
+        String sqlQry = "SELECT * FROM journal where status = 0";
+        allJournalsTableView.setItems(buildJournalTable(sqlQry));
+        System.out.println("[INFO] " + new Date().toString() + " Journals load to table success");
+    }
+
+    private void setDoubleClickOpenJournal() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting journal table mouse actions");
+        allJournalsTableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                String journalid = (String) allJournalsTableView.getSelectionModel().getSelectedItem().get("id");
+                loadThisJournal(journalid);
+            }
+
+        });
+    }
+
+    // todo - fix dates
+    private void loadThisJournal(String id) {
+        // sql get info and all jes using journal id
+        Journal.reopenJournal(id);
+        deactivateAllPanes();
+
+        loadSingleJournEnt();
+
+        journNameTxt.setText(UNFILLLED_JOURN_NAME + Journal.getName());
+        journDateTxt.setText(UNFILLLED_JOURN_DATE + Journal.getDate());
+        journApprovalTxt.setText(UNFILLLED_JOURN_APPROV + Journal.getApproval());
+        journDescTxt.setText(UNFILLLED_JOURN_DESCRIP + Journal.getDescription());
+        journStatusTxt.setText(UNFILLLED_JOURN_STATUS + Journal.getStatus());
+
+        singleJournPane.setVisible(true);
+    }
+
+    @FXML
+    void onJournalReturnBtnClicked(MouseEvent event) {
+        deactivateAllPanes();
+        journalPane.setVisible(true);
+        Journal.clearSingleJournal();
+        loadJournalTable();
+        journNameTxt.setText(UNFILLLED_JOURN_NAME);
+        journDateTxt.setText(UNFILLLED_JOURN_DATE);
+        journApprovalTxt.setText(UNFILLLED_JOURN_APPROV);
+        journDescTxt .setText(UNFILLLED_JOURN_DESCRIP);
+        journStatusTxt.setText(UNFILLLED_JOURN_STATUS);
+    }
+
+    private ObservableList<Map> buildJournalTable(String query) {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.buildJournalData()");
+            }
+
+            System.out.println("[INFO] " + new Date().toString() + " Building journal table data from sql query");
+            ObservableList<Map> journalList = FXCollections.observableArrayList();
+            PreparedStatement getJournals = conn.prepareStatement(query);
+            ResultSet rs = getJournals.executeQuery();
+            while (rs.next()) {
+                Map<String, String> log = new HashMap<>();
+                log.put("id", String.valueOf(rs.getInt("idjournal")));
+                log.put("name", String.valueOf(rs.getString("name")));
+                log.put("date", String.valueOf(rs.getString("date")));
+                log.put("description", String.valueOf(rs.getString("description")));
+                if (rs.getInt("approved") == 1) {
+                    log.put("approved", "Approved");
+                }
+                else if (rs.getInt("approved") == 0) {
+                    log.put("approved", "Declined");
+                }
+                else {
+                    log.put("approved", "Pending");
+                }
+                if (rs.getInt("status") == 1) {
+                    log.put("status", "Resolved");
+                }
+                else {
+                    log.put("status", "Pending");
+                }
+                journalList.add(log);
+            }
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Returning journal table data");
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.buildJournalData()");
+            return journalList;
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildLogData()");
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @FXML
@@ -1154,45 +1539,310 @@ public class AdminHomeController {
         journBtn.setFill(REG_BUTTON_COLOR);
     }
 
+
+
     @FXML
     void onNewJournEntry(MouseEvent event) {
         deactivateAllPanes();
         newJournalPane.setVisible(true);
-        // todo (R2) - Step 1 after adding fields to scenebuilder pane
-        // todo (R2) - create a method (and add it here) to SQL search for the account names
-            // todo (R2) - add the discovered strings as options in the accounts combobox.
-        //          Do it here because it'll update the account options every time the new journal button is pressed.
-            // todo (R2) - ref lines 414, 267, (921 <- where a combo box is dynamically set)
+        Journal.makeNewJournal();
+        loadAccountNamesForJournalCmbBx();
     }
 
     @FXML
     void onCancelNewJournal(MouseEvent event) {
+        journNameFld.setText("");
+        journDescFld.setText("");
+        journEntCreditFld.setText("");
+        journEntDebitFld.setText("");
+        journEntDate.setValue(null);
+        journEntMemoFld.setText("");
+
         deactivateAllPanes();
         journalPane.setVisible(true);
+        Journal.clearJournal();
+    }
+
+    void loadAccountNamesForJournalCmbBx() {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+            }
+            String sqlQry = "SELECT accountName FROM app_domain.accounts";
+            PreparedStatement getAccounts = conn.prepareStatement(sqlQry);
+            ResultSet rs = getAccounts.executeQuery();
+            ArrayList<String> names = new ArrayList<>();
+            while (rs.next()) {
+                names.add(rs.getString(1));
+            }
+            conn.close();
+            ObservableList<String> accTypes = FXCollections.observableArrayList(names);
+            accountComboBox.setItems(accTypes);
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.loadAccountNamesForJournalCmbBx()");
+            ex.printStackTrace();
+        }
     }
 
     @FXML
     void onJournAddClicked(MouseEvent event) {
-        // todo (R2) - Step 2
-        // todo (R2) - validate data that was entered. (ref 801)
-        // todo (R2) - after validate add as new JournalEntry obj
-        // todo (R2) - call loadNewJournalTable() ref lines 450 & 503 (where account table is updated)
-            //  Correctly implemented this should show the entries in the table as they are added to the journal.
+        if (!accountComboBox.getSelectionModel().isEmpty()) {
+            String credit = journEntCreditFld.getText();
+            String account = accountComboBox.getSelectionModel().getSelectedItem();
+            String debit = journEntDebitFld.getText();
+            String memo = journEntMemoFld.getText();
+            java.sql.Date date = java.sql.Date.valueOf(journEntDate.getValue());
+            int journalKey = Journal.getJournalId();
+            int accountKey = -1;
+
+            try {
+                String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+                Connection conn = DriverManager.getConnection(url, "root", "password");
+                if (conn != null) {
+                    System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onJournAddClicked()");
+                }
+                // Checking for username in db
+                PreparedStatement acctNumFind = conn.prepareStatement("SELECT idaccounts FROM accounts WHERE accountName = (?)");
+                acctNumFind.setString(1, account);
+                System.out.println("[INFO] " + new Date().toString() + " Begin account query");
+                ResultSet rs = acctNumFind.executeQuery();
+                System.out.println("[INFO] " + new Date().toString() + " Acct query successful");
+                while (rs.next()) {
+                    accountKey = rs.getInt(1);
+                }
+                conn.close();
+                System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.onJournAddClicked()");
+            }
+
+            catch (Exception ex) {
+                System.out.println("Error connecting to db");
+                ex.printStackTrace();
+            }
+
+            JournalEntry je = new JournalEntry(credit, debit, memo, date, journalKey, accountKey, account);
+        }
+        else {
+            newJournErrorTxt.setText("ERROR: Select an account.");
+        }
+        loadJournEnt();
     }
 
-    private void loadNewJournalTable() {
+    private void loadJournEnt() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all je's to table");
+        newJournTable.setItems(loadNewJournalTable());
+        System.out.println("[INFO] " + new Date().toString() + " JE's load to table success");
+    }
+
+    private void loadSingleJournEnt() {
+        System.out.println("[INFO] " + new Date().toString() + " Loading all je's to table");
+        singleJournTable.setItems(loadNewJournalTableSingle());
+        System.out.println("[INFO] " + new Date().toString() + " JE's load to table success");
+    }
+
+    private void formatJournalEntryTable() {
+        newJournAccountCol.setCellValueFactory(new MapValueFactory("account"));
+        newJournCreditCol.setCellValueFactory(new MapValueFactory("credit"));
+        newJournDebitCol.setCellValueFactory(new MapValueFactory("debit"));
+        newJournDateCol.setCellValueFactory(new MapValueFactory("date"));
+        newJournMemoCol.setCellValueFactory(new MapValueFactory("memo"));
+    }
+
+    private void formatSingleJournalTable() {
+        singleJournAccountCol.setCellValueFactory(new MapValueFactory("account"));
+        singleJournCreditCol.setCellValueFactory(new MapValueFactory("credit"));
+        singleJournDebitCol.setCellValueFactory(new MapValueFactory("debit"));
+        singleJournDateCol.setCellValueFactory(new MapValueFactory("date"));
+        singleJournMemoCol.setCellValueFactory(new MapValueFactory("memo"));
+    }
+
+    private ObservableList<Map> loadNewJournalTable() {
         // load values to the table following logic from loadAccounts method
+
+        ObservableList<Map> journEntryList = FXCollections.observableArrayList();
+        ArrayList<JournalEntry> entryList = Journal.getListOfEntries();
+        for (JournalEntry je : entryList) {
+            Map<String, String> journEnt = new HashMap<>();
+            journEnt.put("account", je.getAccountName());
+            journEnt.put("credit", je.getCredit());
+            journEnt.put("debit", je.getDebit());
+            journEnt.put("date", String.valueOf(je.getDate()));
+            journEnt.put("memo", je.getMemo());
+            journEntryList.add(journEnt);
+        }
+        return journEntryList;
+    }
+
+    private ObservableList<Map> loadNewJournalTableSingle() {
+        // load values to the table following logic from loadAccounts method
+
+        ObservableList<Map> journEntryList = FXCollections.observableArrayList();
+        ArrayList<JournalEntry> entryList = Journal.getListOfEntriesForSingleView();
+        for (JournalEntry je : entryList) {
+            Map<String, String> journEnt = new HashMap<>();
+            journEnt.put("account", je.getAccountName());
+            journEnt.put("credit", je.getCredit());
+            journEnt.put("debit", je.getDebit());
+            journEnt.put("date", String.valueOf(je.getDate()));
+            journEnt.put("memo", je.getMemo());
+            journEntryList.add(journEnt);
+        }
+        return journEntryList;
     }
 
     @FXML
     void onJournSubmitClicked(MouseEvent event) {
-        // todo (R2) - check that all credits and debits balance, and that all fields are filled for the Journal
-        //  e.g. Journal name, and description. I suggest a loop that goes through the
-        //  arrayList of entries that would add either the credit or debit to a local variable in this method of the same name.
-        //  If not match then Show Error (use if else logic similar to log in - ref LogInController line 120).
-        //  todo (R2) - If match, then print the Values to console to test.
-        //  Let Ryan know ready so I can set db actions and then inform team
+        if (verifyJournFields()) {
+            if (verifyDebitsCredits()) {
+                postJourn();
+            }
+        }
+        else {
+            System.out.println("ERROR: "+ new Date().toString() + " Connected to the database. AdminHomeController.onJournSubmitCLicked()");
+        }
     }
+
+    private void postJourn() {
+        // post
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.postJourn()");
+            }
+            // Checking for username in db
+            PreparedStatement postJourn = conn.prepareStatement("INSERT INTO journal values (?,?,?,?,3,0)");
+            postJourn.setInt(1, Journal.getJournalId());
+            postJourn.setString(2, journNameFld.getText());
+            Date date = new Date();
+            java.sql.Date now = new java.sql.Date(date.getTime());
+            postJourn.setDate(3, now);
+            postJourn.setString(4, journDescFld.getText());
+            postJourn.executeUpdate();
+
+            conn.close();
+            System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.postJourn()");
+
+            ArrayList<JournalEntry> je = Journal.getListOfEntries();
+            for (JournalEntry j : je) {
+                conn = DriverManager.getConnection(url, "root", "password");
+                if (conn != null) {
+                    System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.postJourn()");
+                }
+
+                PreparedStatement postJournEnt = conn.prepareStatement("INSERT INTO journal_entry values (null,?,?,?,?,?,?)");
+                if (j.getCredit().equals("")) {
+                    postJournEnt.setString(1, "");
+                    postJournEnt.setString(2, j.getDebit());
+                } else {
+                    postJournEnt.setString(1, j.getCredit());
+                    postJournEnt.setString(2, "");
+                }
+                postJournEnt.setString(3, j.getMemo());
+                postJournEnt.setString(4, j.getDate().toString());
+                postJournEnt.setInt(5, Journal.getJournalId());
+                postJournEnt.setInt(6, j.getAccountKey());
+                postJournEnt.executeUpdate();
+                conn.close();
+            }
+
+            conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.postJourn()");
+            }
+            PreparedStatement getManAdm = conn.prepareStatement("select userName from users where accountant = 0");
+            ResultSet rs = getManAdm.executeQuery();
+
+            while (rs.next()) {
+                PreparedStatement sendMes = conn.prepareStatement("INSERT INTO message values (null,?,?,?,?,?,?,?)");
+                sendMes.setString(1, GlobalUser.getUserName());
+                sendMes.setString(2, rs.getString(1));
+                sendMes.setDate(3, now);
+                sendMes.setString(4, ("Approval Needed: Journal ID - " + Journal.getJournalId()));
+                sendMes.setString(5, GlobalUser.getUserName() + " has submitted a new journal and needs approval.");
+                sendMes.setInt(6, Journal.getJournalId());
+                sendMes.setInt(7, 1);
+                sendMes.executeUpdate();
+            }
+            conn.close();
+        }
+
+        catch (Exception ex) {
+            System.out.println("Error connecting to db");
+            ex.printStackTrace();
+        }
+
+        deactivateAllPanes();
+        journalPane.setVisible(true);
+
+        journNameFld.setText("");
+        journDescFld.setText("");
+        journEntCreditFld.setText("");
+        journEntDebitFld.setText("");
+        journEntDate.setValue(null);
+        journEntMemoFld.setText("");
+
+        Journal.clearJournal();
+
+    }
+
+    private boolean verifyDebitsCredits() {
+        ArrayList<JournalEntry> je = Journal.getListOfEntries();
+        double credit = 0;
+        double debit = 0;
+        for (JournalEntry j : je) {
+            if (j.getCredit().equals("")) {
+                debit += Double.valueOf(j.getDebit());
+            }
+            else
+                credit += Double.valueOf(j.getCredit());
+        }
+        if (debit == credit) {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private boolean verifyJournFields() {
+        if (!(journNameFld.getText().equals("")) && !(journDescFld.getText().equals(""))) {
+            return true;
+        }
+        return false;
+    }
+
+    private void setShowApprovedJourns() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting approved journal checkbox listener actions");
+        approvedChkBx.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (oldValue) {
+                    loadJournalTable();
+                }
+                else {
+                    loadJournalTableAppr();
+                }
+            }
+        });
+    }
+
+    private void setShowPendingJourns() {
+        System.out.println("[INFO] " + new Date().toString() + " Setting pending journal checkbox listener actions");
+        pendingChkBx.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (oldValue) {
+                    loadJournalTable();
+                }
+                else {
+                    loadJournalTablePend();
+                }
+            }
+        });
+    }
+
+
 
     // End journal methods
 
@@ -1826,6 +2476,14 @@ public class AdminHomeController {
         System.out.println("[INFO] " + new Date().toString() + " Setting global message");
         Message.setMessage(id);
 
+        if ((Message.getIsJournal() == 1)) {
+            approveBtn.setVisible(true);
+            declineBtn.setVisible(true);
+        }
+        else {
+            approveBtn.setVisible(false);
+            declineBtn.setVisible(false);
+        }
         msgFromTxt.setText(UNFILLED_FROM + Message.getFrom());
         msgDateTxt.setText(UNFILLED_DATE + Message.getDate());
         msgSubjectTxt.setText(UNFILLED_SUBJ + Message.getSubject());
@@ -1834,6 +2492,125 @@ public class AdminHomeController {
         mailTablePane.setVisible(false);
         newMessagePane.setVisible(false);
         openMessagePane.setVisible(true);
+    }
+
+    @FXML
+    void onApproveClicked(MouseEvent event) {
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onApproveCLicked()");
+            }
+            int journId = Message.getJournalId();
+
+            PreparedStatement setJournApproved = conn.prepareStatement("update journal set approved = 1, status = 1 where idjournal = (?)");
+            setJournApproved.setInt(1,journId);
+            setJournApproved.executeUpdate();
+
+            PreparedStatement journalEntries = conn.prepareStatement("select * from journal_entry where journal_key = (?)");
+            journalEntries.setInt(1, journId);
+            ResultSet rs = journalEntries.executeQuery();
+            String creditAsString = "";
+            String debitAsString = "";
+            String memo = "";
+            java.sql.Date date = null;
+            String balAsString = "";
+            int accountKey = -1;
+
+            while (rs.next()) {
+                creditAsString = rs.getString(2);
+                debitAsString = rs.getString(3);
+                memo = rs.getString(4);
+                date = rs.getDate(5);
+                accountKey = rs.getInt(7);
+
+                // Post to account
+                PreparedStatement getBalanceFromAcct = conn.prepareStatement("select balance from accounts where idaccounts = (?)");
+                getBalanceFromAcct.setInt(1, accountKey);
+                ResultSet rs2 = getBalanceFromAcct.executeQuery();
+
+                while (rs2.next()) {
+                    balAsString = rs2.getString(1);
+                }
+                double balance = Double.valueOf(changeToDouble(balAsString));
+                double credit = 0;
+                double debit = 0;
+                if (creditAsString.equals("")) {
+                    debit = Double.valueOf(changeToDouble(debitAsString));
+                    balance -= debit;
+                }
+                else {
+                    credit = Double.valueOf(changeToDouble(creditAsString));
+                    balance += credit;
+                }
+
+                PreparedStatement updateAct = conn.prepareStatement("update accounts set balance = (?) where idaccounts = (?)");
+                updateAct.setString(1, formatNumber(String.valueOf(balance)));
+                updateAct.setInt(2, accountKey);
+                updateAct.executeUpdate();
+
+                // Post to ledger
+
+                PreparedStatement addLedger = conn.prepareStatement("insert into ledger values (null,?,?,?,?,?,?,?)");
+                addLedger.setDate(1, date);
+                addLedger.setString(2, memo);
+                addLedger.setString(3, debitAsString);
+                addLedger.setString(4, creditAsString);
+                addLedger.setString(5, String.valueOf(balance));
+                addLedger.setInt(6, accountKey);
+                addLedger.setInt(7, journId);
+                addLedger.executeUpdate();
+            }
+            // Send message to sender
+
+            PreparedStatement sendMsg = conn.prepareStatement("insert into message values (null,?,?,?,?,?,null, 0)");
+            sendMsg.setString(1, GlobalUser.getUserName());
+            sendMsg.setString(2, Message.getFrom());
+            Date dateString = new Date();
+            java.sql.Date now = new java.sql.Date(dateString.getTime());
+            sendMsg.setString(3, now.toString());
+            sendMsg.setString(4, "RE: " + Message.getSubject());
+            sendMsg.setString(5, "Your journal entry was approved.");
+            sendMsg.executeUpdate();
+
+            // Remove message
+            PreparedStatement removeMessage = conn.prepareStatement("delete from message where idmessage = (?)");
+            removeMessage.setInt(1, Integer.valueOf(Message.getId()));
+            removeMessage.executeUpdate();
+        }
+        catch(Exception ex) {
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.onApproveCLicked()");
+            ex.printStackTrace();
+        }
+        Message.clearMessage();
+        loadMessages();
+
+        msgFromTxt.setText(UNFILLED_FROM);
+        msgDateTxt.setText(UNFILLED_DATE);
+        msgSubjectTxt.setText(UNFILLED_SUBJ);
+        msgContentTxt.setText("");
+
+        deactivateAllPanes();
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+    }
+
+    static String changeToDouble(String num) {
+        String str = "";
+        char[] strToAry = num.toCharArray();
+        for (char c : strToAry) {
+            if (!(c == ',')) {
+                str = str + c;
+            }
+        }
+        return str;
+
+    }
+
+    @FXML
+    void onDeclineClicked(MouseEvent event) {
+        declineJournPane.setVisible(true);
     }
 
     @FXML
@@ -1888,7 +2665,8 @@ public class AdminHomeController {
             }
 
             PreparedStatement sendMsg = conn.prepareStatement("INSERT INTO message values (null, \""+ GlobalUser.getUserName() + "\", \"" + to + "\", \""
-                    + today + "\", \"" + subject + "\", \"" + message + "\")");
+                    + today + "\", \"" + subject + "\", \"" + message +
+                    "\", null, 0)");
             sendMsg.executeUpdate();
             conn.close();
             System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AHC.onNewMessageSend()");
@@ -1920,6 +2698,57 @@ public class AdminHomeController {
         Message.clearMessage();
         loadMessages();
     }
+
+    @FXML
+    void onCancelDeclineJourn(MouseEvent event) {
+        declineJournPane.setVisible(false);
+    }
+
+    @FXML
+    void onDecline2Clicked(MouseEvent event) {
+        // send message
+        try {
+            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+            Connection conn = DriverManager.getConnection(url, "root", "password");
+            if (conn != null) {
+                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AHC.onDecline2Clicked()");
+            }
+
+            int journId = Message.getJournalId();
+
+            PreparedStatement setJournApproved = conn.prepareStatement("update journal set approved = 0, status = 1 where idjournal = (?)");
+            setJournApproved.setInt(1,journId);
+            setJournApproved.executeUpdate();
+
+            // Send message to sender
+
+            PreparedStatement sendMsg = conn.prepareStatement("insert into message values (null,?,?,?,?,?,null, 0)");
+            sendMsg.setString(1, GlobalUser.getUserName());
+            sendMsg.setString(2, Message.getFrom());
+            Date dateString = new Date();
+            java.sql.Date now = new java.sql.Date(dateString.getTime());
+            sendMsg.setString(3, now.toString());
+            sendMsg.setString(4, "RE: " + Message.getSubject());
+            sendMsg.setString(5, "Your journal entry was declined.\n" + reasonFld.getText());
+            sendMsg.executeUpdate();
+
+            // Remove message
+            PreparedStatement removeMessage = conn.prepareStatement("delete from message where idmessage = (?)");
+            removeMessage.setInt(1, Integer.valueOf(Message.getId()));
+            removeMessage.executeUpdate();
+        }
+        catch (Exception ex) {
+            System.out.println("Error connecting to db");
+            System.out.println("[FATAL ERROR] " + new Date().toString() + " AHC.onDecline2Clicked()");
+            ex.printStackTrace();
+        }
+        reasonFld.setText("");
+        deactivateAllPanes();
+        loadMessages();
+        mailPane.setVisible(true);
+        mailTablePane.setVisible(true);
+    }
+
 
 
 }

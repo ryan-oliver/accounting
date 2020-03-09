@@ -404,7 +404,7 @@ public class ManagerHomeController {
             }
 
             PreparedStatement sendMsg = conn.prepareStatement("INSERT INTO message values (null, \""+ GlobalUser.getUserName() + "\", \"" + to + "\", \""
-                    + today + "\", \"" + subject + "\", \"" + message + "\")");
+                    + today + "\", \"" + subject + "\", \"" + message + "\", null)");
             sendMsg.executeUpdate();
             conn.close();
             System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AHC.onNewMessageSend()");
@@ -449,6 +449,9 @@ public class ManagerHomeController {
         deactivateAllPanes();
 
         formatAcctTable();
+        formatMesgTable();
+        formatLogTable();
+        setDoubleClickOpenMessage();
         loadAccounts();
         setDoubleClickOpenAcct();
     }

@@ -14,6 +14,8 @@ public class Message {
     private static String subject;
     private static String date;
     private static String message;
+    private static Integer journalId;
+    private static Integer isJournal;
 
     public static void setMessage(String mid) {
         try {
@@ -34,6 +36,8 @@ public class Message {
                 date = String.valueOf(rs.getDate(4));
                 subject = rs.getString(5);
                 message = rs.getString(6);
+                journalId = rs.getInt(7);
+                isJournal = rs.getInt(8);
             }
 
             conn.close();
@@ -80,5 +84,11 @@ public class Message {
         return message;
     }
 
+    public static Integer getJournalId() {
+        return journalId;
+    }
 
+    public static Integer getIsJournal() {
+        return isJournal;
+    }
 }

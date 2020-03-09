@@ -167,22 +167,17 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+      <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="200.0" layoutX="110.0" layoutY="75.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="3.0" width="750.0" />
-            <TableView layoutX="110.0" layoutY="307.0" prefHeight="463.0" prefWidth="750.0" stylesheets="file:stylesheets/admin_user-table.css">
+            <TableView fx:id="ledgerTableView" layoutX="110.0" layoutY="307.0" prefHeight="463.0" prefWidth="750.0" stylesheets="file:stylesheets/admin_user-table.css">
               <columns>
-                <TableColumn prefWidth="101.0" text="Date" />
-                <TableColumn prefWidth="190.0" text="Item" />
-                  <TableColumn prefWidth="57.0" text="Post Ref" />
-                  <TableColumn prefWidth="100.0" text="Debit" />
-                  <TableColumn prefWidth="100.0" text="Credit" />
-                  <TableColumn prefWidth="75.0" text="Balance">
-                     <columns>
-                        <TableColumn prefWidth="100.0" text="Debit" />
-                        <TableColumn prefWidth="100.0" text="Credit" />
-                     </columns>
-                  </TableColumn>
+                <TableColumn fx:id="ledgerDateCol" prefWidth="101.0" text="Date" />
+                <TableColumn fx:id="ledgerDescCol" prefWidth="190.0" text="Item" />
+                  <TableColumn fx:id="jIDLedgerCol" prefWidth="57.0" text="Post Ref" />
+                  <TableColumn fx:id="ledgerDebitCol" prefWidth="100.0" text="Debit" />
+                  <TableColumn fx:id="ledgerCreditCol" prefWidth="100.0" text="Credit" />
+                  <TableColumn fx:id="ledgerBalCol" prefWidth="195.0" text="Balance" />
               </columns>
             </TableView>
             <Text fx:id="accNameTxt" fill="#9f7c3f" layoutX="145.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Name:">
@@ -351,6 +346,8 @@
                   <Text fx:id="msgContentTxt" fill="#9f7c3f" layoutX="30.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="910.9571838378906" />
                   <Button fx:id="mailReturnBtn" layoutX="4.0" mnemonicParsing="false" onMouseClicked="#onMailReturnPressed" text="Return" />
                   <Button fx:id="mailReplyBtn" layoutX="917.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onMessageReplyPressed" text="Reply" />
+                  <Button fx:id="approveBtn" layoutX="3.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onApproveClicked" text="Approve" visible="false" />
+                  <Button fx:id="declineBtn" layoutX="85.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onDeclineClicked" text="Decline" visible="false" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="newMessagePane" layoutX="38.0" layoutY="64.0" prefHeight="690.0" prefWidth="776.0" visible="false">
@@ -368,15 +365,16 @@
       <AnchorPane fx:id="journalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="675.0" layoutY="100.0" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="100.0" />
-            <TableView editable="true" layoutX="66.0" layoutY="140.0" maxHeight="627.0" prefHeight="627.0" prefWidth="778.0" stylesheets="file:stylesheets/admin_user-table.css">
+            <TableView fx:id="allJournalsTableView" editable="true" layoutX="66.0" layoutY="140.0" maxHeight="627.0" prefHeight="627.0" prefWidth="778.0" stylesheets="file:stylesheets/admin_user-table.css">
                <columns>
-                  <TableColumn prefWidth="150.0" text="Category1" />
-                  <TableColumn prefWidth="200.0" text="Category2" />
-                  <TableColumn prefWidth="150.0" text="Category3" />
-                  <TableColumn prefWidth="99.0" text="Category4" />
+                  <TableColumn fx:id="allJournNameCol" prefWidth="150.0" text="Name" />
+                  <TableColumn fx:id="allJournDateCol" prefWidth="115.33367919921875" text="Date" />
+                  <TableColumn fx:id="allJournDescriptionCol" prefWidth="301.60479736328125" text="Description" />
+                  <TableColumn fx:id="allJournStatusCol" minWidth="4.85302734375" prefWidth="106.182373046875" text="Approval" />
+                  <TableColumn fx:id="allJournPendingCol" prefWidth="99.8765869140625" text="Status" />
                </columns>
             </TableView>
-            <TextField layoutX="677.0" layoutY="102.0" maxHeight="25.0" maxWidth="98.0" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;">
+            <TextField fx:id="journSearchFld" layoutX="677.0" layoutY="102.0" maxHeight="25.0" maxWidth="98.0" style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f;">
                <font>
                   <Font size="10.0" />
                </font>
@@ -390,33 +388,34 @@
                   <Image url="file:img/search.png" />
                </image>
             </ImageView>
-            <RadioButton layoutX="205.0" layoutY="104.0" mnemonicParsing="false" text="Category1">
-               <toggleGroup>
-                  <ToggleGroup fx:id="tgSearch1" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton layoutX="579.0" layoutY="104.0" mnemonicParsing="false" text="Category4" toggleGroup="$tgSearch1" />
-            <RadioButton layoutX="460.0" layoutY="104.0" mnemonicParsing="false" text="Category3" toggleGroup="$tgSearch1" />
-            <RadioButton layoutX="336.0" layoutY="104.0" mnemonicParsing="false" text="Category2" toggleGroup="$tgSearch1" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#journSearchBtnClicked" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
             <Button layoutX="858.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#onNewJournEntry" text="New Entry" />
+            <CheckBox fx:id="approvedChkBx" layoutX="427.0" layoutY="103.0" mnemonicParsing="false" text="Approved" />
+            <CheckBox fx:id="pendingChkBx" layoutX="537.0" layoutY="104.0" mnemonicParsing="false" text="Pending" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
-            <TableView editable="true" layoutX="93.0" layoutY="85.0" maxHeight="627.0" prefHeight="627.0" prefWidth="773.0" stylesheets="file:stylesheets/admin_user-table.css">
+            <TableView fx:id="newJournTable" editable="true" layoutX="106.0" layoutY="113.0" maxHeight="627.0" prefHeight="598.0" prefWidth="773.0" stylesheets="file:stylesheets/admin_user-table.css">
                <columns>
-                  <TableColumn prefWidth="150.0" text="Category1" />
-                  <TableColumn prefWidth="200.0" text="Category2" />
-                  <TableColumn prefWidth="150.0" text="Category3" />
-                  <TableColumn prefWidth="99.0" text="Category4" />
+                  <TableColumn fx:id="newJournAccountCol" prefWidth="150.0" text="Account" />
+                  <TableColumn fx:id="newJournCreditCol" prefWidth="106.0" text="Credit" />
+                  <TableColumn fx:id="newJournDebitCol" prefWidth="118.0" text="Debit" />
+                  <TableColumn fx:id="newJournDateCol" prefWidth="107.0" text="Date" />
+                  <TableColumn fx:id="newJournMemoCol" prefWidth="290.0" text="Memo" />
                </columns>
             </TableView>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="47.0" layoutX="94.0" layoutY="718.0" stroke="BLACK" strokeType="INSIDE" width="642.0" />
-            <Text layoutX="209.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remove this and add text fileds for input here" />
-            <Button layoutX="813.0" layoutY="725.0" mnemonicParsing="false" onMouseClicked="#onJournAddClicked" text="Add" />
+            <Button layoutX="826.0" layoutY="753.0" mnemonicParsing="false" onMouseClicked="#onJournAddClicked" text="Add" />
             <Button layoutX="895.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onJournSubmitClicked" text="Submit" />
             <Button layoutX="16.0" layoutY="92.0" mnemonicParsing="false" onMouseClicked="#onCancelNewJournal" text="Cancel" />
+            <TextField fx:id="journNameFld" layoutX="106.0" layoutY="76.0" promptText="Name" />
+            <TextField fx:id="journDescFld" layoutX="279.0" layoutY="76.0" prefHeight="27.0" prefWidth="600.0" promptText="Descripton" />
+            <TextField fx:id="journEntCreditFld" layoutX="267.0" layoutY="718.0" prefHeight="27.0" prefWidth="200.0" promptText="Credit" />
+            <TextField fx:id="journEntMemoFld" layoutX="106.0" layoutY="753.0" prefHeight="27.0" prefWidth="708.0" promptText="Memo" />
+            <TextField fx:id="journEntDebitFld" layoutX="482.0" layoutY="718.0" prefHeight="27.0" prefWidth="200.0" promptText="Debit" />
+            <DatePicker fx:id="journEntDate" layoutX="691.0" layoutY="718.0" promptText="Date of Transaction" />
+            <Text fx:id="newJournErrorTxt" fill="#f80000" layoutX="106.0" layoutY="794.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+            <ComboBox fx:id="accountComboBox" layoutX="106.0" layoutY="718.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
       <Rectangle fx:id="mailBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="230.0" layoutY="17.0" onMouseClicked="#onMailBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
@@ -426,5 +425,45 @@
          </image>
       </ImageView>
       <Rectangle fx:id="helpBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="290.0" layoutY="17.0" onMouseClicked="#onHelpBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
+      <AnchorPane fx:id="declineJournPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#615f5a" height="314.0" layoutX="135.0" layoutY="259.0" stroke="BLACK" strokeType="INSIDE" width="732.0" />
+            <Text fill="#9f7c3f" layoutX="148.0" layoutY="299.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Journal Declined">
+               <font>
+                  <Font size="35.0" />
+               </font>
+            </Text>
+            <Line endX="603.5" layoutX="249.0" layoutY="310.0" startX="-100.0" stroke="#9f7c3f" />
+            <TextArea fx:id="reasonFld" layoutX="148.0" layoutY="326.0" prefHeight="200.0" prefWidth="705.0" promptText="Enter reason for declining..." style="-fx-background-color: #424242; -fx-text-fill: #9f7c3f#9f7c3f;" />
+            <Button layoutX="798.0" layoutY="533.0" mnemonicParsing="false" onMouseClicked="#onDecline2Clicked" text="Decline" />
+            <Button layoutX="730.0" layoutY="533.0" mnemonicParsing="false" onMouseClicked="#onCancelDeclineJourn" text="Cancel" />
+         </children></AnchorPane>
+      <AnchorPane fx:id="singleJournPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <AnchorPane layoutX="10.0" layoutY="90.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="613.0" layoutY="34.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="5.0" width="976.0" />
+                  <Text fx:id="journNameTxt" fill="#9f7c3f" layoutX="30.0" layoutY="65.431640625" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
+                  <Text fx:id="journDateTxt" fill="#9f7c3f" layoutX="368.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date: " />
+                  <Text fx:id="journDescTxt" fill="#9f7c3f" layoutX="30.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
+                  <Line endX="792.8702392578125" endY="-1.6157073974609375" layoutX="168.0" layoutY="100.0" startX="-149.11781311035156" startY="-1.6157073974609375" stroke="#9f7c3f" strokeWidth="0.5" />
+                  <Button layoutX="4.0" mnemonicParsing="false" onMouseClicked="#onJournalReturnBtnClicked" text="Return" />
+                  <Button fx:id="approveBtn1" layoutX="3.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onApproveClicked" text="Approve" visible="false" />
+                  <Button fx:id="declineBtn1" layoutX="85.0" layoutY="656.0" mnemonicParsing="false" onMouseClicked="#onDeclineClicked" text="Decline" visible="false" />
+                  <Text fx:id="journApprovalTxt" fill="#9f7c3f" layoutX="629.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Approval: " />
+                  <Text fx:id="journStatusTxt" fill="#9f7c3f" layoutX="820.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status:" />
+               </children>
+            </AnchorPane>
+            <TableView fx:id="singleJournTable" editable="true" layoutX="29.0" layoutY="203.0" maxHeight="627.0" prefHeight="518.0" prefWidth="943.0" stylesheets="file:stylesheets/admin_user-table.css">
+               <columns>
+                  <TableColumn fx:id="singleJournAccountCol" prefWidth="150.0" text="Account" />
+                  <TableColumn fx:id="singleJournCreditCol" prefWidth="106.0" text="Credit" />
+                  <TableColumn fx:id="singleJournDebitCol" prefWidth="118.0" text="Debit" />
+                  <TableColumn fx:id="singleJournDateCol" prefWidth="107.0" text="Date" />
+                  <TableColumn fx:id="singleJournMemoCol" prefWidth="459.0" text="Memo" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
