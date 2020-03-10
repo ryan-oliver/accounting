@@ -98,12 +98,6 @@
                   <Font size="10.0" />
                </font>
             </TextField>
-            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="779.0" layoutY="103.0" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="file:img/search.png" />
-               </image>
-            </ImageView>
-            <Rectangle fx:id="searchBtn" arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
             <RadioButton fx:id="accountNumberRdo" layoutX="205.0" layoutY="104.0" mnemonicParsing="false" text="Account Number">
                <tooltip>
                   <Tooltip text="Press here to search by Account Number" />
@@ -136,6 +130,13 @@
                   <Cursor fx:constant="HAND" />
                </cursor></RadioButton>
             <Text fx:id="accountAlertText" fill="RED" layoutX="199.0" layoutY="761.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="600.784423828125" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#424242" height="25.0" layoutX="775.0" layoutY="100.0" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="779.0" layoutY="103.0" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:img/search.png" />
+               </image>
+            </ImageView>
+            <Rectangle fx:id="searchBtn" arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" onMouseEntered="#onSearchEntered" onMouseExited="#onSearchExited" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
@@ -305,7 +306,7 @@
             <CheckBox fx:id="pendingChkBx" layoutX="537.0" layoutY="104.0" mnemonicParsing="false" text="Pending" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
          <children>
             <TableView fx:id="newJournTable" editable="true" layoutX="106.0" layoutY="113.0" maxHeight="627.0" prefHeight="598.0" prefWidth="773.0" stylesheets="file:stylesheets/admin_user-table.css">
                <columns>

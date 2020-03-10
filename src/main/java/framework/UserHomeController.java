@@ -1012,43 +1012,51 @@ public class UserHomeController {
 
     @FXML
     void onJournAddClicked(MouseEvent event) {
-        if (!accountComboBox.getSelectionModel().isEmpty()) {
-            String credit = journEntCreditFld.getText();
-            String account = accountComboBox.getSelectionModel().getSelectedItem();
-            String debit = journEntDebitFld.getText();
-            String memo = journEntMemoFld.getText();
-            java.sql.Date date = java.sql.Date.valueOf(journEntDate.getValue());
-            int journalKey = Journal.getJournalId();
-            int accountKey = -1;
+        if (!(journEntDate.getValue() == null)) {
+            if (!(journEntCreditFld.getText().equals("") && journEntDebitFld.getText().equals("")) && !(!(journEntCreditFld.getText().equals("")) && !(journEntDebitFld.getText().equals("")))) {
+                if (!accountComboBox.getSelectionModel().isEmpty()) {
+                    newJournErrorTxt.setText("");
+                    String credit = journEntCreditFld.getText();
+                    String account = accountComboBox.getSelectionModel().getSelectedItem();
+                    String debit = journEntDebitFld.getText();
+                    String memo = journEntMemoFld.getText();
+                    java.sql.Date date = java.sql.Date.valueOf(journEntDate.getValue());
+                    int journalKey = Journal.getJournalId();
+                    int accountKey = -1;
 
-            try {
-                String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
-                Connection conn = DriverManager.getConnection(url, "root", "password");
-                if (conn != null) {
-                    System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onJournAddClicked()");
+                    try {
+                        String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+                        Connection conn = DriverManager.getConnection(url, "root", "password");
+                        if (conn != null) {
+                            System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.onJournAddClicked()");
+                        }
+                        // Checking for username in db
+                        PreparedStatement acctNumFind = conn.prepareStatement("SELECT idaccounts FROM accounts WHERE accountName = (?)");
+                        acctNumFind.setString(1, account);
+                        System.out.println("[INFO] " + new Date().toString() + " Begin account query");
+                        ResultSet rs = acctNumFind.executeQuery();
+                        System.out.println("[INFO] " + new Date().toString() + " Acct query successful");
+                        while (rs.next()) {
+                            accountKey = rs.getInt(1);
+                        }
+                        conn.close();
+                        System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.onJournAddClicked()");
+                    } catch (Exception ex) {
+                        System.out.println("Error connecting to db");
+                        ex.printStackTrace();
+                    }
+
+                    JournalEntry je = new JournalEntry(credit, debit, memo, date, journalKey, accountKey, account);
+                } else {
+                    newJournErrorTxt.setText("ERROR: Select an account.");
                 }
-                // Checking for username in db
-                PreparedStatement acctNumFind = conn.prepareStatement("SELECT idaccounts FROM accounts WHERE accountName = (?)");
-                acctNumFind.setString(1, account);
-                System.out.println("[INFO] " + new Date().toString() + " Begin account query");
-                ResultSet rs = acctNumFind.executeQuery();
-                System.out.println("[INFO] " + new Date().toString() + " Acct query successful");
-                while (rs.next()) {
-                    accountKey = rs.getInt(1);
-                }
-                conn.close();
-                System.out.println("[INFO] " + new Date().toString() + " Database connection closed. AdminHomeController.onJournAddClicked()");
             }
-
-            catch (Exception ex) {
-                System.out.println("Error connecting to db");
-                ex.printStackTrace();
+            else {
+                newJournErrorTxt.setText("ERROR: Enter only credit or debit.");
             }
-
-            JournalEntry je = new JournalEntry(credit, debit, memo, date, journalKey, accountKey, account);
         }
         else {
-            newJournErrorTxt.setText("ERROR: Select an account.");
+            newJournErrorTxt.setText("ERROR: Please select a date.");
         }
         loadJournEnt();
     }
@@ -1120,12 +1128,23 @@ public class UserHomeController {
         if (verifyJournFields()) {
             if (verifyDebitsCredits()) {
                 if (verifyDebitsDontExceedBalance()) {
-                    postJourn();
+                    if (!(Journal.getListOfEntries().size() <= 0)) {
+                        postJourn();
+                    }
+                    else {
+                        newJournErrorTxt.setText("ERROR: No journal entries to submit.");
+                    }
                 }
+                else {
+                    newJournErrorTxt.setText("ERROR: Debit exceeds balance");
+                }
+            }
+            else {
+                newJournErrorTxt.setText("ERROR: Debits and credits do not match.");
             }
         }
         else {
-            System.out.println("ERROR: "+ new Date().toString() + " Connected to the database. AdminHomeController.onJournSubmitCLicked()");
+            newJournErrorTxt.setText("ERROR: Please enter journal name and description.");
         }
     }
 
