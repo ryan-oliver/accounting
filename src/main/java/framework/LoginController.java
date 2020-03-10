@@ -142,7 +142,7 @@ public class LoginController {
 
 
                             // Log in
-                            SceneSwitch.switchScene("User Home.fxml", getClass());
+                            SceneSwitch.switchScene("Manager Home.fxml", getClass());
                             System.out.println("[INFO] " + new Date().toString() + " Username / password matched. Transferring scene to manager home page");
                         } catch (Exception ex) {
                             System.out.println("[FATAL ERROR] " + new Date().toString() + " LogInController.logInManager(1)");

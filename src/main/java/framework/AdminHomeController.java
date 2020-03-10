@@ -579,6 +579,7 @@ public class AdminHomeController {
      * Accounts page methods
      * @param event
      */
+
     @FXML
     void onAccountsClicked(MouseEvent event) {
         deactivateAllPanes();
@@ -764,8 +765,7 @@ public class AdminHomeController {
             System.out.println("[FATAL ERROR] " + new Date().toString() + " AdminHomeController.buildAccountData()");
             ex.printStackTrace();
         }
-        accountsPane.setVisible(false);
-        userPane.setVisible(false);
+        deactivateAllPanes();
         singleAccountPane.setVisible(true);
     }
 
@@ -1378,12 +1378,6 @@ public class AdminHomeController {
      * Journal Methods
      */
 
-    // todo (R2) - Begin journal area. This serves as a bookmark
-
-    // search
-
-    // chkbx's
-
     @FXML
     void onJournClicked() {
         deactivateAllPanes();
@@ -1695,12 +1689,46 @@ public class AdminHomeController {
     void onJournSubmitClicked(MouseEvent event) {
         if (verifyJournFields()) {
             if (verifyDebitsCredits()) {
-                postJourn();
+                if (verifyDebitsDontExceedBalance()) {
+                    postJourn();
+                }
             }
         }
         else {
             System.out.println("ERROR: "+ new Date().toString() + " Connected to the database. AdminHomeController.onJournSubmitCLicked()");
         }
+    }
+
+    private boolean verifyDebitsDontExceedBalance() {
+        ArrayList<JournalEntry> je = Journal.getListOfEntries();
+        double debit = 0;
+        for (JournalEntry j : je) {
+            if (j.getCredit().equals("")) {
+                debit = Double.valueOf(j.getDebit());
+                try {
+                    String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+                    Connection conn = DriverManager.getConnection(url, "root", "password");
+                    if (conn != null) {
+                        System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.verifyDDEB()");
+                    }
+                    PreparedStatement ps = conn.prepareStatement("select balance from accounts where idaccounts = " + j.getAccountKey());
+                    ResultSet rs = ps.executeQuery();
+                    String balance = "";
+                    while (rs.next()) {
+                        balance = rs.getString(1);
+                    }
+                    double numBal = Double.valueOf(changeToDouble(balance));
+                    if (debit > numBal) {
+                        return false;
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Error connecting to db");
+                    ex.printStackTrace();
+                }
+            }
+
+        }
+        return true;
     }
 
     private void postJourn() {
@@ -1751,7 +1779,7 @@ public class AdminHomeController {
             if (conn != null) {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. AdminHomeController.postJourn()");
             }
-            PreparedStatement getManAdm = conn.prepareStatement("select userName from users where accountant = 0");
+            PreparedStatement getManAdm = conn.prepareStatement("select userName from users where accountant = 0 and userName not like  \"" + GlobalUser.getUserName() + "\"");
             ResultSet rs = getManAdm.executeQuery();
 
             while (rs.next()) {

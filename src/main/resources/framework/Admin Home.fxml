@@ -167,7 +167,7 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#40404000" height="25.0" layoutX="775.0" layoutY="100.0" onMouseClicked="#onSearchClicked" smooth="false" stroke="#9f7c3f" strokeType="INSIDE" width="25.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+      <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4b4b" height="200.0" layoutX="110.0" layoutY="75.0" stroke="#9f7c3f" strokeType="INSIDE" strokeWidth="3.0" width="750.0" />
             <TableView fx:id="ledgerTableView" layoutX="110.0" layoutY="307.0" prefHeight="463.0" prefWidth="750.0" stylesheets="file:stylesheets/admin_user-table.css">
@@ -418,13 +418,11 @@
             <ComboBox fx:id="accountComboBox" layoutX="106.0" layoutY="718.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
-      <Rectangle fx:id="mailBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="230.0" layoutY="17.0" onMouseClicked="#onMailBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
       <ImageView fx:id="helpIcon" fitHeight="46.0" fitWidth="46.0" layoutX="290.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:img/qm.png" />
          </image>
       </ImageView>
-      <Rectangle fx:id="helpBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="290.0" layoutY="17.0" onMouseClicked="#onHelpBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
       <AnchorPane fx:id="declineJournPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#615f5a" height="314.0" layoutX="135.0" layoutY="259.0" stroke="BLACK" strokeType="INSIDE" width="732.0" />
@@ -465,5 +463,7 @@
             </TableView>
          </children>
       </AnchorPane>
+      <Rectangle fx:id="helpBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="290.0" layoutY="17.0" onMouseClicked="#onHelpBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
+      <Rectangle fx:id="mailBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="230.0" layoutY="17.0" onMouseClicked="#onMailBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
    </children>
 </AnchorPane>
