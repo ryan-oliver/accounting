@@ -1558,6 +1558,8 @@ public class AdminHomeController {
     }
 
     void loadAccountNamesForJournalCmbBx() {
+        accountComboBox.getSelectionModel().clearSelection();
+        accountComboBox.setValue(null);
         try {
             String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
             Connection conn = DriverManager.getConnection(url, "root", "password");
