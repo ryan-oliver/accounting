@@ -111,7 +111,7 @@ public class Journal {
                 System.out.println("[INFO] " + new Date().toString() + " Connected to the database. Journal()");
             }
 
-            PreparedStatement getJournCt = conn.prepareStatement("SELECT COUNT(*) from journal");
+            PreparedStatement getJournCt = conn.prepareStatement("SELECT idjournal from journal order by idjournal desc limit 1");
             ResultSet rs = getJournCt.executeQuery();
             while (rs.next()) {
                 journalId = rs.getInt(1) + 1;

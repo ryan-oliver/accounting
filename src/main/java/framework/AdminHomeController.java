@@ -1823,6 +1823,8 @@ public class AdminHomeController {
             ex.printStackTrace();
         }
 
+
+        loadJournalTable();
         deactivateAllPanes();
         journalPane.setVisible(true);
 
