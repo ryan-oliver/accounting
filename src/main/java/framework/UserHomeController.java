@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -396,6 +397,12 @@ public class UserHomeController {
 
     @FXML
     private TableColumn ledgerBalCol;
+
+    @FXML
+    private Button addFileBtn;
+
+    @FXML
+    private Label addFileLbl;
 
 
     /**
@@ -1160,6 +1167,18 @@ public class UserHomeController {
         }
         return str;
 
+    }
+
+    @FXML
+    void onAddFileClicked(MouseEvent event) {
+        final JFileChooser fc = new JFileChooser();
+        int response = fc.showOpenDialog(null);
+        if(response == JFileChooser.APPROVE_OPTION){
+            addFileLbl.setText("File added to journal: " + fc.getSelectedFile().toString());
+            //System.out.println("[INFO] " + fc.getSelectedFile().toString());
+        } else{
+
+        }
     }
 
     private boolean verifyDebitsDontExceedBalance() {
