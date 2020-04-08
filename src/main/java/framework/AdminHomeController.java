@@ -1558,6 +1558,7 @@ public class AdminHomeController {
         journEntDebitFld.setText("");
         journEntDate.setValue(null);
         journEntMemoFld.setText("");
+        addFileLbl.setText("");
 
         deactivateAllPanes();
         journalPane.setVisible(true);
@@ -1709,6 +1710,7 @@ public class AdminHomeController {
             if (verifyDebitsCredits()) {
                 if (verifyDebitsDontExceedBalance()) {
                     if (!(Journal.getListOfEntries().size() <= 0)) {
+                        addFileLbl.setText("");
                         postJourn();
                     }
                     else {

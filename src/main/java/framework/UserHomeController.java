@@ -988,6 +988,7 @@ public class UserHomeController {
         journEntDebitFld.setText("");
         journEntDate.setValue(null);
         journEntMemoFld.setText("");
+        addFileLbl.setText("");
 
         deactivateAllPanes();
         journalPane.setVisible(true);
@@ -1138,6 +1139,7 @@ public class UserHomeController {
             if (verifyDebitsCredits()) {
                 if (verifyDebitsDontExceedBalance()) {
                     if (!(Journal.getListOfEntries().size() <= 0)) {
+                        addFileLbl.setText("");
                         postJourn();
                     }
                     else {
