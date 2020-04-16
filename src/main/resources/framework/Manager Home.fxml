@@ -136,6 +136,60 @@
                   <Cursor fx:constant="HAND" />
                </cursor></RadioButton>
             <Text fx:id="accountAlertText" fill="RED" layoutX="199.0" layoutY="761.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="600.784423828125" />
+            <Button layoutX="813.0" layoutY="101.0" mnemonicParsing="false" onMousePressed="#onGenReportPressed" text="Generate Reports" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="reportsPane" layoutX="213.0" layoutY="10.0" prefHeight="800.0" prefWidth="997.0" visible="false">
+         <children>
+            <TableView fx:id="reportTableView" editable="true" layoutX="57.0" layoutY="130.0" maxHeight="622.0" prefHeight="601.0" prefWidth="884.0" stylesheets="file:stylesheets/admin_user-table.css">
+               <columns>
+                  <TableColumn fx:id="reportsaccountNumberCol" prefWidth="150.0" text="Account Number" />
+                  <TableColumn fx:id="reportsaccountNameCol" prefWidth="400.0" text="Account Name" />
+                  <TableColumn fx:id="reportsDebitCol" prefWidth="170.0" text="Credit" />
+                  <TableColumn fx:id="reportsCreditCol" prefWidth="163.0" text="Debit" />
+               </columns>
+            </TableView>
+            <RadioButton fx:id="trialBalanceRdo" layoutX="147.0" layoutY="104.0" mnemonicParsing="false" text="Trial Balance">
+               <tooltip>
+                  <Tooltip text="Press here to generate a trial balance" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <toggleGroup>
+                  <ToggleGroup fx:id="tgSearch1" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="incomeStatementRdo" layoutX="483.0" layoutY="104.0" mnemonicParsing="false" text="Retained Earnings" toggleGroup="$tgSearch1">
+               <tooltip>
+                  <Tooltip text="Press here to generate an income statement" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </RadioButton>
+            <RadioButton fx:id="balanceSheetRdo" layoutX="375.0" layoutY="104.0" mnemonicParsing="false" text="Balance Sheet" toggleGroup="$tgSearch1">
+               <tooltip>
+                  <Tooltip text="Press here to generate a balance sheet" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </RadioButton>
+            <RadioButton fx:id="retainedEarningsRdo" layoutX="246.0" layoutY="104.0" mnemonicParsing="false" text="Income Statement" toggleGroup="$tgSearch1">
+               <tooltip>
+                  <Tooltip text="Press here to generate a retained earnings" />
+               </tooltip>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </RadioButton>
+            <Button layoutX="57.0" layoutY="100.0" mnemonicParsing="false" onMousePressed="#onGenReportReturnPressed" text="Return" />
+            <Button layoutX="886.0" layoutY="100.0" mnemonicParsing="false" onMousePressed="#onGenRepoortSubmitPressed" text="Submit" />
+            <DatePicker fx:id="reportEndDate" layoutX="646.0" layoutY="100.0" promptText="Enter report end date" />
+            <DatePicker fx:id="reportStartDate" layoutX="646.0" layoutY="64.0" promptText="Enter report start date" />
+            <Text layoutX="613.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From:" />
+            <Text layoutX="626.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To:" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="singleAccountPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
