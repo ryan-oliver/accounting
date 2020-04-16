@@ -1571,7 +1571,6 @@ public class AdminHomeController {
         journEntMemoFld.setText("");
 
         deactivateAllPanes();
-        newJournTable.setItems(null);
         journalPane.setVisible(true);
         Journal.clearJournal();
     }

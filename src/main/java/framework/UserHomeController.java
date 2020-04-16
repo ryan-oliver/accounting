@@ -984,7 +984,6 @@ public class UserHomeController {
 
         deactivateAllPanes();
         journalPane.setVisible(true);
-        newJournTable.setItems(null);
         Journal.clearJournal();
     }
 
