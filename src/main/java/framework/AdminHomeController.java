@@ -64,24 +64,6 @@ public class AdminHomeController {
     private ImageView profilePicture;
 
     @FXML
-    private ComboBox categoryNJE;
-
-    @FXML
-    private ComboBox accountssubcategoryNJE;
-
-    @FXML
-    private TextField creditamtNJE;
-
-    @FXML
-    private TextField debitamtNJE;
-
-    @FXML
-    private TextField memofldNJE;
-
-    @FXML
-    private DatePicker DatefldNJE;
-
-    @FXML
     private Text userName;
 
     @FXML
