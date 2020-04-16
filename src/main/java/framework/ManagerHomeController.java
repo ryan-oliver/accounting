@@ -1746,5 +1746,20 @@ public class ManagerHomeController {
         mailPane.setVisible(true);
         mailTablePane.setVisible(true);
     }
+
+    @FXML
+    void onGenRepoortSubmitPressed() {
+        // todo - add code
+    }
+
+    @FXML
+    void onGenReportReturnPressed() {
+        // todo - add code
+    }
+
+    @FXML
+    void onGenReportPressed() {
+        // todo - add code
+    }
 }
 
