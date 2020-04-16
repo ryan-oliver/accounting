@@ -20,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.text.DecimalFormat;
@@ -531,6 +532,12 @@ public class AdminHomeController {
 
     @FXML
     private TableColumn ledgerBalCol;
+
+    @FXML
+    private Button addFileBtn;
+
+    @FXML
+    private Label addFileLbl;
 
     /**
      * Initialize method is called before primary screen is loaded. Place setup methods here.
@@ -1551,6 +1558,7 @@ public class AdminHomeController {
         journEntDebitFld.setText("");
         journEntDate.setValue(null);
         journEntMemoFld.setText("");
+        addFileLbl.setText("");
 
         deactivateAllPanes();
         journalPane.setVisible(true);
@@ -1702,6 +1710,7 @@ public class AdminHomeController {
             if (verifyDebitsCredits()) {
                 if (verifyDebitsDontExceedBalance()) {
                     if (!(Journal.getListOfEntries().size() <= 0)) {
+                        addFileLbl.setText("");
                         postJourn();
                     }
                     else {
@@ -1718,6 +1727,18 @@ public class AdminHomeController {
         }
         else {
             newJournErrorTxt.setText("ERROR: Please enter journal name and description.");
+        }
+    }
+
+    @FXML
+    void onAddFileClicked(MouseEvent event) {
+        final JFileChooser fc = new JFileChooser();
+        int response = fc.showOpenDialog(null);
+        if(response == JFileChooser.APPROVE_OPTION){
+            addFileLbl.setText("File added to journal: " + fc.getSelectedFile().toString());
+            //System.out.println("[INFO] " + fc.getSelectedFile().toString());
+        } else{
+
         }
     }
 
