@@ -14,10 +14,6 @@ public class Main extends Application {
 
     private static Stage pStage;
 
-    // todo - tool tips
-    // todo - help button
-
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));

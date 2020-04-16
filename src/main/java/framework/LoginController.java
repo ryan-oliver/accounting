@@ -84,11 +84,15 @@ public class LoginController {
                     logInAdmin();
                     System.out.println("[INFO] " + new Date().toString() + " GlobalUser identified as admin. Logging in...");
                 }
-                else if (GlobalUser.getManager() == 1 || GlobalUser.getAccountant() == 1) {
+                else if (GlobalUser.getAccountant() == 1) {
                     // Log in user
                     logInUser();
-                    System.out.println("[INFO] " + new Date().toString() + " GlobalUser identified as non-admin. Logging in...");
+                    System.out.println("[INFO] " + new Date().toString() + " GlobalUser identified as accountant. Logging in...");
 
+                }
+                else if (GlobalUser.getManager() == 1) {
+                    logInManager();
+                    System.out.println("[INFO] " + new Date().toString() + " GlobalUser identified as manager. Logging in...");
                 }
                 else {
                     System.out.println("[FATAL ERROR] " + new Date().toString() + " Account type not set for user: " + userName.getText());
@@ -110,6 +114,81 @@ public class LoginController {
 
         }
 
+    }
+
+    // Log in a non-admin account
+    private void logInManager() {
+        // Check password
+        if (GlobalUser.getPassword().equals(password.getText())) {
+            LocalDate ld = LocalDate.now();
+            Date today = java.sql.Date.valueOf(ld);
+            if (GlobalUser.getPasswordExpired().compareTo(today) >= 0) {
+                if (GlobalUser.getSuspendEnd() == null || GlobalUser.getSuspendEnd().compareTo(today) >= 0) {
+                    if (GlobalUser.getPasswordAtt() < 4) {
+                        try {
+
+                            String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+                            Connection conn = DriverManager.getConnection(url, "root", "password");
+                            if (conn != null) {
+                                System.out.println("[INFO] " + new Date().toString() + " Connected to the database. LoginController.logInManager()");
+                            }
+
+                            PreparedStatement setAtt = conn.prepareStatement("update users set passwordAtt = (?) where idusers = (?)");
+                            setAtt.setInt(1, 0);
+                            setAtt.setInt(2, GlobalUser.getIdUsers());
+                            System.out.println("[INFO] " + new Date().toString() + " Begin password attempt reset to 0");
+                            setAtt.executeUpdate();
+                            System.out.println("[INFO] " + new Date().toString() + " Password attempt reset complete");
+
+
+                            // Log in
+                            SceneSwitch.switchScene("User Home.fxml", getClass());
+                            System.out.println("[INFO] " + new Date().toString() + " Username / password matched. Transferring scene to manager home page");
+                        } catch (Exception ex) {
+                            System.out.println("[FATAL ERROR] " + new Date().toString() + " LogInController.logInManager(1)");
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("[ERROR] " + new Date().toString() + " Exceed wrong password attempts for user: " + GlobalUser.getUserName());
+                        alertText.setText("ERROR: Exceeded allowed login attempts. Contact the admin.");
+
+                    }
+                }
+                else {
+                    System.out.println("[ERROR] " + new Date().toString() + " Account suspended for user: " + GlobalUser.getUserName());
+                    alertText.setText("ERROR: Account is suspended. Contact the admin.");
+                }
+            } else {
+                System.out.println("[ERROR] " + new Date().toString() + " Password expired for user: " + GlobalUser.getUserName());
+                alertText.setText("ERROR: Password is expired. Contact the admin or reset through the forgot password tool");
+            }
+        }
+        else {
+            int pasAtt = GlobalUser.getPasswordAtt() + 1;
+            System.out.println("[ERROR] " + new Date().toString() + " Username / password not matched. Incrementing password attempts in db");
+            alertText.setText("ERROR: Username or password incorrect");
+            try {
+                String url = "jdbc:mysql://35.245.123.161:3306/app_domain";
+                Connection conn = DriverManager.getConnection(url, "root", "password");
+                if (conn != null) {
+                    System.out.println("[INFO] " + new Date().toString() + " Connected to the database. LoginController.logInManager()");
+                }
+
+                PreparedStatement setAtt = conn.prepareStatement("update users set passwordAtt = (?) where idusers = (?)");
+                setAtt.setInt(1, pasAtt);
+                setAtt.setInt(2, GlobalUser.getIdUsers());
+                System.out.println("[INFO] " + new Date().toString() + " Begin password attempt update");
+                setAtt.executeUpdate();
+                System.out.println("[INFO] " + new Date().toString() + " Password attempt update complete");
+                conn.close();
+                System.out.println("[INFO] " + new Date().toString() + " Database connection closed. LoginController.logInManager()");
+            }
+            catch (Exception ex) {
+                System.out.println("[FATAL ERROR] " + new Date().toString() + " LogInController.logInManager(2)");
+                ex.printStackTrace();
+            }
+            GlobalUser.clearUser();
+        }
     }
 
     // Log in a non-admin account

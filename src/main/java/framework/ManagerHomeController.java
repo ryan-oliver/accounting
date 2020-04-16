@@ -1,7 +1,5 @@
 package framework;
 
-import framework.GlobalUser;
-import framework.SceneSwitch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +27,7 @@ import java.util.Map;
  * This class controls the user page after login. Currently used for manager and for accountant.
  */
 
-public class UserHomeController {
+public class ManagerHomeController {
 
     private final Color REG_BUTTON_COLOR = Color.web("#a4a6a8");
     private final Color HOV_BUTTON_COLOR = Color.web("#949698");
