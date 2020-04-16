@@ -408,6 +408,41 @@ public class ManagerHomeController {
     @FXML
     private TableColumn ledgerBalCol;
 
+    @FXML
+    private AnchorPane reportsPane;
+
+    @FXML
+    private RadioButton trialBalanceRdo;
+
+    @FXML
+    private RadioButton incomeStatementRdo;
+
+    @FXML
+    private RadioButton balanceSheetRdo;
+
+    @FXML
+    private RadioButton retainedEarningsRdo;
+
+    @FXML
+    private DatePicker reportStartDate;
+
+    @FXML
+    private DatePicker reportEndDate;
+
+    @FXML
+    private TableView<Map> reportTableView;
+
+    @FXML
+    private TableColumn reportsaccountNumberCol;
+
+    @FXML
+    private TableColumn reportsaccountNameCol;
+
+    @FXML
+    private TableColumn reportsDebitCol;
+
+    @FXML
+    private TableColumn reportsCreditCol;
 
     /**
      * Called before loading pane. Loads data.
