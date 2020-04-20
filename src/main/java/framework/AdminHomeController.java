@@ -539,6 +539,9 @@ public class AdminHomeController {
     @FXML
     private Label addFileLbl;
 
+    @FXML
+    private AnchorPane RatioPane;
+
     /**
      * Initialize method is called before primary screen is loaded. Place setup methods here.
      */
