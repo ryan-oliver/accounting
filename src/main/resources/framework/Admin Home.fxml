@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.Double?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -16,11 +17,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="framework.AdminHomeController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #615f5a;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="framework.AdminHomeController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="800.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
       <Line endX="3.0517578125E-5" endY="678.0" layoutX="200.0" layoutY="119.0" startX="3.0517578125E-5" startY="-119.0" stroke="#9f7c3f" strokeMiterLimit="0.0" strokeWidth="6.0" />
@@ -395,7 +397,7 @@
             <CheckBox fx:id="pendingChkBx" layoutX="537.0" layoutY="104.0" mnemonicParsing="false" text="Pending" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+      <AnchorPane fx:id="newJournalPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0" visible="false">
          <children>
             <TableView fx:id="newJournTable" editable="true" layoutX="106.0" layoutY="113.0" maxHeight="627.0" prefHeight="566.0" prefWidth="774.0" stylesheets="file:stylesheets/admin_user-table.css">
                <columns>
@@ -475,6 +477,147 @@
                   <TableColumn fx:id="singleJournMemoCol" prefWidth="459.0" text="Memo" />
                </columns>
             </TableView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="RatioPane" layoutX="203.0" prefHeight="800.0" prefWidth="997.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="100.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="400.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="700.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="100.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="400.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a4a6a8" height="120.0" layoutX="700.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Text layoutX="425.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="100.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="400.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="700.0" layoutY="150.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="100.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="400.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd11f" height="50.0" layoutX="700.0" layoutY="350.0" stroke="BLACK" strokeType="INSIDE" width="235.0" />
+            <Text layoutX="150.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Ratio">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="430.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Return on Assets">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="730.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Return on Equity">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="130.0" layoutY="385.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Net Profit Margin">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="440.0" layoutY="385.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Turnover">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="760.0" layoutY="385.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quick Ratio">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Polygon fill="#1fff62" layoutX="295.0" layoutY="245.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+              <points>
+                <Double fx:value="-50.0" />
+                <Double fx:value="40.0" />
+                <Double fx:value="50.0" />
+                <Double fx:value="40.0" />
+                <Double fx:value="0.0" />
+                <Double fx:value="-60.0" />
+              </points>
+            </Polygon>
+            <Polygon fill="#ff1f1f" layoutX="595.0" layoutY="245.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+               <points>
+                  <Double fx:value="-50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="0.0" />
+                  <Double fx:value="-60.0" />
+               </points>
+            </Polygon>
+            <Polygon fill="#1fff62" layoutX="895.0" layoutY="245.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+               <points>
+                  <Double fx:value="-50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="0.0" />
+                  <Double fx:value="-60.0" />
+               </points>
+            </Polygon>
+            <Polygon fill="#fff41f" layoutX="295.0" layoutY="445.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+               <points>
+                  <Double fx:value="-50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="0.0" />
+                  <Double fx:value="-60.0" />
+               </points>
+            </Polygon>
+            <Polygon fill="#1fff62" layoutX="595.0" layoutY="445.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+               <points>
+                  <Double fx:value="-50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="0.0" />
+                  <Double fx:value="-60.0" />
+               </points>
+            </Polygon>
+            <Polygon fill="#1fff62" layoutX="895.0" layoutY="445.0" scaleX="0.5" scaleY="0.5" stroke="BLACK" strokeType="INSIDE">
+               <points>
+                  <Double fx:value="-50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="50.0" />
+                  <Double fx:value="40.0" />
+                  <Double fx:value="0.0" />
+                  <Double fx:value="-60.0" />
+               </points>
+            </Polygon>
+            <Text layoutX="165.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="621.78%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="480.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="8.39%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="775.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="30.62%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="175.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="31.29%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="480.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="39.47%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="765.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="621.78%">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
       <Rectangle fx:id="helpBtn" arcHeight="5.0" fill="#1f93ff00" height="47.0" layoutX="290.0" layoutY="17.0" onMouseClicked="#onHelpBtnPressed" stroke="TRANSPARENT" strokeType="INSIDE" strokeWidth="0.0" width="47.0" />
